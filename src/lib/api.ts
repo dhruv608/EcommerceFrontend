@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080",
-})
+  baseURL: "https://ecommercebackend-fqk1.onrender.com",
+});
+
 api.interceptors.request.use((config) => {
   if (typeof window === "undefined") return config;
   const token = localStorage.getItem("token");
@@ -18,6 +19,5 @@ api.interceptors.request.use((config) => {
 
   return config;
 });
-
 
 export default api;

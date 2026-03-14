@@ -23,26 +23,25 @@ const FeaturedSection = ({
         {/* 🔥 Header Section */}
         <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-4">
           <div className="max-w-2xl">
-            <span className="text-indigo-600 font-bold tracking-wider uppercase text-sm">
+            <span className="text-black font-bold tracking-wider uppercase text-sm">
               Exclusive Drops
             </span>
+          </div>
+          <div>
             <h2 className="text-4xl md:text-5xl font-black text-gray-900 mt-2 tracking-tight">
               Trending This Week.
             </h2>
             <p className="text-gray-500 mt-3 text-lg">
-
             </p>
           </div>
-
-          <Link
-            href="/products"
-            className="group flex items-center gap-2 border-b-2 border-black pb-1 text-sm font-bold hover:text-indigo-600 hover:border-indigo-600 transition-all"
-          >
-            View All Products
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </Link>
         </div>
-
+        <Link
+          href="/products"
+          className="group flex items-center gap-2 border-b-2 border-gray-300 pb-1 text-sm font-bold hover:text-gray-600 hover:border-gray-600 transition-all"
+        >
+          View All Products
+          <span className="group-hover:translate-x-1 transition-transform">→</span>
+        </Link>
         {/*  Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {allFeaturedProducts.map((product) => (
@@ -91,9 +90,12 @@ const FeaturedSection = ({
                   {/* 👇 Slide-Up Action Bar */}
                   <div className="absolute bottom-4 left-4 right-4 translate-y-[120%] group-hover:translate-y-0 transition-transform duration-500 ease-out">
                     <div className="flex gap-2">
-                      <button className="flex-1 bg-black text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-stone-600 transition-colors shadow-xl">
-                        <ShoppingBag className="w-4 h-4" />
-                        Add to Cart
+                      <button 
+                        onClick={() => window.location.href = `/products/${product.id}`}
+                        className="flex-1 bg-[#acac49] hover:bg-[#96963f] text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors shadow-xl"
+                      >
+                        <Eye className="w-4 h-4" />
+                        View Product
                       </button>
                       <Button className="bg-white text-black p-3 rounded-xl shadow-xl hover:bg-gray-100 transition-colors">
                         <Eye className="w-5 h-5" />
@@ -105,7 +107,7 @@ const FeaturedSection = ({
                 {/* 📝 Details Area */}
                 <div className="p-5">
                   <div className="mb-2">
-                    <h3 className="font-bold text-lg text-gray-900 leading-snug line-clamp-1 group-hover:text-indigo-600 transition-colors">
+                    <h3 className="font-bold text-lg text-gray-900 leading-snug line-clamp-1 group-hover:text-gray-600 transition-colors">
                       {product.name}
                     </h3>
                     <p className="text-gray-500 text-xs mt-1 line-clamp-1">

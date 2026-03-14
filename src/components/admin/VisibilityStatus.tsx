@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Switch } from "@/components/ui/switch";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { Product, ProductContent } from "@/lib/types";
+import ToggleSwitch from "./ToggleSwitch";
 
 interface VisibilityStatusProps {
   product: ProductContent;
@@ -43,24 +43,24 @@ export default function VisibilityStatus({ product }: VisibilityStatusProps) {
   }
 
   return (
-    <div className="bg-white p-6 rounded border space-y-4">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-4">
       <h2 className="font-medium">Visibility Status</h2>
 
       {/* Active */}
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-medium">Active Status</span>
-        <Switch
+      <div className="flex items-center justify-between py-2">
+        <span className="text-sm font-medium text-gray-700">Active Status</span>
+        <ToggleSwitch
           checked={isActive}
-          onCheckedChange={toggleActive}
+          onChange={toggleActive}
         />
       </div>
 
       {/* Featured */}
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-medium">Featured Product</span>
-        <Switch
+      <div className="flex items-center justify-between py-2">
+        <span className="text-sm font-medium text-gray-700">Featured Product</span>
+        <ToggleSwitch
           checked={isFeatured}
-          onCheckedChange={toggleFeatured}
+          onChange={toggleFeatured}
         />
       </div>
 

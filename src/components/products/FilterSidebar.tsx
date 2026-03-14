@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -24,7 +23,8 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
   const maxPriceParam = Number(searchParams.get("maxPrice")) || 5000;
 
   // Local State for Slider (taaki drag karte waqt URL na badle, chhodne pe badle)
-  const [priceRange, setPriceRange] = React.useState([minPriceParam, maxPriceParam]);
+  const [minPrice, setMinPrice] = React.useState(minPriceParam);
+  const [maxPrice, setMaxPrice] = React.useState(maxPriceParam);
 
   // 2. Filter Update Logic
   const updateFilter = (key: string, value: string | null) => {
@@ -48,83 +48,150 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold tracking-tight">Filters</h3>
-        {(selectedCategoryId || minPriceParam > 0) && (
+    <div className="bg-white rounded-[14px] p-5 shadow-[0_4px_16px_rgba(0,0,0,0.04)] w-[240px]">
+      {/* Filters Title */}
+      <h3 className="text-[18px] font-semibold mb-4">Filters</h3>
+      <Separator className="mb-6" />
+      
+      {/* Category Section */}
+      <div className="mb-6">
+        <h4 className="text-sm font-semibold mb-3 text-gray-700">Categories</h4>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
+            <Checkbox 
+              id="cat-all" 
+              checked={!selectedCategoryId}
+              onCheckedChange={() => updateFilter("categoryId", null)}
+              className="w-4 h-4 accent-[#a3a23d]"
+            />
+            <Label htmlFor="cat-all" className="text-sm font-medium flex-1 cursor-pointer flex justify-between items-center">
+              <span>All Products</span>
+            </Label>
+          </div>
+          {categories.map((cat) => (
+            <div key={cat.id} className="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
+              <Checkbox 
+                id={`cat-${cat.id}`} 
+                checked={selectedCategoryId === cat.id.toString()}
+                onCheckedChange={() => updateFilter("categoryId", cat.id.toString())}
+                className="w-4 h-4 accent-[#a3a23d]"
+              />
+              <Label htmlFor={`cat-${cat.id}`} className="text-sm cursor-pointer flex-1 flex justify-between items-center">
+                <span>{cat.name}</span>
+                <span className="text-[13px] text-[#9ca3af]">({cat.productCount})</span>
+              </Label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Price Slider */}
+        <div className="mb-6">
+          <h4 className="text-sm font-semibold mb-4 text-gray-700">Price Range</h4>
+          
+          {/* Custom Dual Range Slider */}
+          <div className="slider-container relative w-full h-9">
+            {/* Background Track */}
+            <div className="slider-track absolute top-1/2 left-0 right-0 w-full h-1 bg-[#e5e7eb] rounded-[4px] transform -translate-y-1/2"></div>
+            
+            {/* Active Range */}
+            <div 
+              className="slider-range absolute top-1/2 h-1 bg-[#acac49] rounded-[4px] transform -translate-y-1/2"
+              style={{
+                left: `${(minPrice / 5000) * 100}%`,
+                width: `${((maxPrice - minPrice) / 5000) * 100}%`
+              }}
+            ></div>
+            
+            {/* Min Range Slider */}
+            <input
+              type="range"
+              min="0"
+              max="5000"
+              value={minPrice}
+              onChange={(e) => {
+                let newMin = Number(e.target.value);
+                // Prevent sliders from crossing
+                if (newMin > maxPrice - 50) {
+                  newMin = maxPrice - 50;
+                }
+                setMinPrice(newMin);
+                updateFilter("minPrice", newMin.toString());
+              }}
+              className="min-slider absolute top-1/2 left-0 w-full h-1 bg-transparent appearance-none transform -translate-y-1/2 pointer-events-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#acac49] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-3 [&::-webkit-slider-thumb]:-mt-1.5 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-lg"
+            />
+            
+            {/* Max Range Slider */}
+            <input
+              type="range"
+              min="0"
+              max="5000"
+              value={maxPrice}
+              onChange={(e) => {
+                let newMax = Number(e.target.value);
+                // Prevent sliders from crossing
+                if (newMax < minPrice + 50) {
+                  newMax = minPrice + 50;
+                }
+                setMaxPrice(newMax);
+                updateFilter("maxPrice", newMax.toString());
+              }}
+              className="max-slider absolute top-1/2 left-0 w-full h-1 bg-transparent appearance-none transform -translate-y-1/2 pointer-events-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#acac49] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-4 [&::-webkit-slider-thumb]:-mt-1.5 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-lg"
+            />
+          </div>
+        
+          {/* Price Inputs */}
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <input
+                type="number"
+                value={minPrice}
+                onChange={(e) => {
+                  let newMin = parseInt(e.target.value) || 0;
+                  // Prevent sliders from crossing
+                  if (newMin > maxPrice - 50) {
+                    newMin = maxPrice - 50;
+                  }
+                  setMinPrice(newMin);
+                  updateFilter("minPrice", newMin.toString());
+                }}
+                className="w-full rounded-lg px-2.5 py-2 border border-[#e5e7eb] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#acac49] focus:border-transparent"
+                placeholder="Min"
+              />
+            </div>
+            <span className="text-gray-400 text-sm">—</span>
+            <div className="flex-1">
+              <input
+                type="number"
+                value={maxPrice}
+                onChange={(e) => {
+                  let newMax = parseInt(e.target.value) || 0;
+                  // Prevent sliders from crossing
+                  if (newMax < minPrice + 50) {
+                    newMax = minPrice + 50;
+                  }
+                  setMaxPrice(newMax);
+                  updateFilter("maxPrice", newMax.toString());
+                }}
+                className="w-full rounded-lg px-2.5 py-2 border border-[#e5e7eb] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#acac49] focus:border-transparent"
+                placeholder="Max"
+              />
+            </div>
+          </div>
+        </div>
+
+      {/* Clear Filters Button */}
+      {(selectedCategoryId || minPriceParam > 0) && (
+        <div className="mt-6 pt-4 border-t border-[#e5e7eb]">
           <Button 
-            variant="ghost" 
-            className="text-xs text-red-500 hover:text-red-600 h-8 px-2"
+            variant="outline"
+            className="w-full border-[#e5e7eb] px-3 py-2 rounded-lg text-[14px] hover:bg-[#f9fafb] transition-colors"
             onClick={() => router.push("/products")}
           >
-            Reset
+            Clear Filters
           </Button>
-        )}
-      </div>
-      
-      <Separator />
-
-      <Accordion type="multiple" defaultValue={["category", "price"]} className="w-full">
-        
-        {/* 🔥 Category Filter */}
-        <AccordionItem value="category">
-          <AccordionTrigger className="text-sm font-bold">Categories</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="cat-all" 
-                  checked={!selectedCategoryId}
-                  onCheckedChange={() => updateFilter("categoryId", null)}
-                />
-                <Label htmlFor="cat-all" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  All Products
-                </Label>
-              </div>
-              {categories.map((cat) => (
-                <div key={cat.id} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={`cat-${cat.id}`} 
-                    checked={selectedCategoryId === cat.id.toString()}
-                    onCheckedChange={() => updateFilter("categoryId", cat.id.toString())}
-                  />
-                  <Label htmlFor={`cat-${cat.id}`} className="text-sm cursor-pointer flex-1 flex justify-between">
-                    <span>{cat.name}</span>
-                    <span className="text-xs text-gray-400">({cat.productCount})</span>
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* 🔥 Price Slider Filter */}
-        <AccordionItem value="price">
-          <AccordionTrigger className="text-sm font-bold">Price Range</AccordionTrigger>
-          <AccordionContent>
-            <div className="pt-4 px-2">
-              <Slider
-                defaultValue={[minPriceParam, maxPriceParam]}
-                max={10000} // Apne max price ke hisab se set karein
-                step={100}
-                value={priceRange}
-                onValueChange={setPriceRange}
-                onValueCommit={handlePriceCommit} // Ye tab chalega jab slider chhodenge
-                className="mb-6"
-              />
-              <div className="flex items-center justify-between">
-                <div className="border rounded px-3 py-1 text-sm font-medium min-w-20 text-center">
-                  ₹{priceRange[0]}
-                </div>
-                <span className="text-gray-400 text-xs">TO</span>
-                <div className="border rounded px-3 py-1 text-sm font-medium min-w-20 text-center">
-                  ₹{priceRange[1]}
-                </div>
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+        </div>
+      )}
     </div>
   );
 }

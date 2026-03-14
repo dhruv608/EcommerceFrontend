@@ -47,9 +47,9 @@ export function DeleteProductDialog({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button size="icon" variant="ghost">
-          {redirectAfter ? <div className="hover:bg-red-900 hover:text-white rounded px-4 py-2">Delete</div> : <Trash2 size={16} />}
-        </Button>
+        <div className="p-1.5 rounded hover:bg-gray-100 transition-colors duration-150 cursor-pointer">
+          <Trash2 className="w-4 h-4 text-gray-500 hover:text-red-500" />
+        </div>
       </AlertDialogTrigger>
 
       <AlertDialogContent>

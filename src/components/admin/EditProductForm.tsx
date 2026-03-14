@@ -6,12 +6,11 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import api from "@/lib/api";
-import { Product, ProductForm } from "@/lib/types";
+import { SingleProduct, ProductForm } from "@/lib/types";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectTrigger,
@@ -21,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import DeleteImageDialog from "./DeleteImageDialog";
 import Link from "next/link";
+import ToggleSwitch from "./ToggleSwitch";
 
 
 
@@ -28,7 +28,7 @@ import Link from "next/link";
 export default function EditProductForm({
   product,
 }: {
-  product: Product;
+  product: SingleProduct;
 }) {
   const router = useRouter();
 
@@ -109,10 +109,9 @@ export default function EditProductForm({
   /* ---------------- UI ---------------- */
 
   return (
-    <div className="space-y-8">
-
+    <div className="max-w-7xl mx-auto px-6 py-6">
       {/* HEADER */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-6">
         {/* LEFT : Title + Breadcrumb */}
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold">Edit Product</h1>
@@ -120,19 +119,16 @@ export default function EditProductForm({
           <div className="text-sm text-gray-500 flex items-center gap-1">
             <Link
               href="/admin/products"
-              className="hover:text-emerald-600 transition"
+              className="hover:text-[#acac49] transition"
             >
               Products
             </Link>
-
-          
 
             <span>/</span>
 
             <span className="font-medium text-gray-900 truncate max-w-60">
               {product.name}
             </span>
-            
           </div>
         </div>
 
@@ -146,7 +142,7 @@ export default function EditProductForm({
           </Button>
 
           <Button
-            className="bg-emerald-600 hover:bg-emerald-700"
+            className="bg-[#acac49] hover:bg-[#96963f] text-white rounded-md px-4 py-2 font-medium shadow-sm transition"
             onClick={handleUpdate}
             disabled={isSubmitting}
           >
@@ -155,19 +151,16 @@ export default function EditProductForm({
         </div>
       </div>
 
-
-      <div className="grid grid-cols-3 gap-8">
+      <div className="grid grid-cols-3 gap-6">
 
         {/* LEFT */}
-        <div className="col-span-2 space-y-8">
+        <div className="col-span-2 space-y-4">
 
           {/* GENERAL INFO */}
-          <div className="bg-white border rounded-lg p-6 space-y-5">
-           
-
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
             {/* Product Name */}
             <div className="space-y-1">
-              <label className="text-sm font-medium">
+              <label className="text-sm font-medium text-gray-900">
                 Product Name 
               </label>
               <Input
@@ -181,7 +174,7 @@ export default function EditProductForm({
 
             {/* Description */}
             <div className="space-y-1">
-              <label className="text-sm font-medium">
+              <label className="text-sm font-medium text-gray-900">
                 Product Description
               </label>
               <Textarea
@@ -196,7 +189,7 @@ export default function EditProductForm({
             {/* Price & Stock */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-sm font-medium">
+                <label className="text-sm font-medium text-gray-900">
                   Price 
                 </label>
                 <Input
@@ -205,11 +198,12 @@ export default function EditProductForm({
                   onChange={handleChange}
                   placeholder="₹ Price"
                   required
+                  className="h-10 px-3 rounded-md border"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-medium">
+                <label className="text-sm font-medium text-gray-900">
                   Stock 
                 </label>
                 <Input
@@ -218,30 +212,29 @@ export default function EditProductForm({
                   onChange={handleChange}
                   placeholder="Available stock"
                   required
+                  className="h-10 px-3 rounded-md border"
                 />
               </div>
             </div>
           </div>
 
           {/* IMAGES */}
-          <div className="bg-white border rounded-lg p-6 space-y-4">
-
-            <h2 className="font-medium">Product Images</h2>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+            <h2 className="font-medium text-gray-900">Product Images</h2>
 
             {/* Existing Images */}
             <div className="grid grid-cols-4 gap-3">
-
               {product.images.map((img) => (
                 <div
                   key={img}
-                  className="relative h-28 border rounded overflow-hidden"
+                  className="relative w-full h-24 rounded-md border overflow-hidden"
                 >
                   <Image
                     src={img}
                     alt="product"
                     fill
                     sizes="200px"
-                    className="object-contain"
+                    className="object-cover"
                   />
 
                   <DeleteImageDialog
@@ -252,11 +245,9 @@ export default function EditProductForm({
 
                 </div>
               ))}
-
             </div>
 
             {/* Add New Images */}
-
             <Input
               type="file"
               multiple
@@ -274,7 +265,7 @@ export default function EditProductForm({
                 {newImages.map((img, index) => (
                   <div
                     key={index}
-                    className="relative border rounded-lg overflow-hidden"
+                    className="relative w-full h-24 rounded-md border overflow-hidden"
                   >
                     <img
                       src={URL.createObjectURL(img)}
@@ -306,11 +297,10 @@ export default function EditProductForm({
         </div>
 
         {/* RIGHT */}
-        <div className="space-y-8">
-
+        <div className="col-span-1 space-y-4">
           {/* CATEGORY */}
-          <div className="bg-white border rounded-lg p-6 space-y-4">
-            <h2 className="font-medium">Category</h2>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-4">
+            <h2 className="font-medium text-gray-900">Category</h2>
 
             <Select
               value={form.categoryId}
@@ -318,7 +308,7 @@ export default function EditProductForm({
                 setForm((p) => ({ ...p, categoryId: val }))
               }
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full h-10 px-3 border rounded-md bg-white text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -330,22 +320,24 @@ export default function EditProductForm({
           </div>
 
           {/* STATUS */}
-          <div className="bg-white border rounded-lg p-6 space-y-4">
-            <div className="flex justify-between items-center">
-              <span>Active</span>
-              <Switch
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-4">
+            <h2 className="font-medium text-gray-900">Visibility Status</h2>
+            
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm font-medium text-gray-700">Active Product</span>
+              <ToggleSwitch
                 checked={form.isActive}
-                onCheckedChange={(v) =>
+                onChange={(v: boolean) =>
                   setForm((p) => ({ ...p, isActive: v }))
                 }
               />
             </div>
 
-            <div className="flex justify-between items-center">
-              <span>Featured</span>
-              <Switch
+            <div className="flex items-center justify-between py-2">
+              <span className="text-sm font-medium text-gray-700">Featured Product</span>
+              <ToggleSwitch
                 checked={form.isFeatured}
-                onCheckedChange={(v) =>
+                onChange={(v: boolean) =>
                   setForm((p) => ({ ...p, isFeatured: v }))
                 }
               />

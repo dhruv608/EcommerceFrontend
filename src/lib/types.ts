@@ -20,6 +20,7 @@ images:string[];
 category:Category;
 
 }
+
 export interface Product {
   content: ProductContent[];  
   totalPages: number;
@@ -29,6 +30,9 @@ export interface Product {
   first: boolean;
   last: boolean;
 }
+
+// Type for single product response
+export type SingleProduct = ProductContent;
 
 // sirf form ke liye type
 export interface ProductForm {

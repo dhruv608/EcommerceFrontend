@@ -1,6 +1,6 @@
 import api from "@/lib/api";
 import EditProductForm from "@/components/admin/EditProductForm";
-import { Product } from "@/lib/types";
+import { SingleProduct } from "@/lib/types";
 
 interface PageProps {
   params: Promise<{
@@ -14,7 +14,7 @@ export default async function EditProductPage({ params }: PageProps) {
 
   try {
     const res = await api.get(`/products/${id}`);
-    const product: Product = res.data;
+    const product: SingleProduct = res.data;
 
     return <EditProductForm product={product} />;
   } catch (error) {

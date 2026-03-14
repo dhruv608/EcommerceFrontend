@@ -11,6 +11,15 @@ const nextConfig: NextConfig = {
     ],
   },
   reactCompiler: true,
+  turbopack: {},
+  webpack: (config, { dev }) => {
+    if (dev) {
+      // Disable Console Ninja during development
+      config.externals = config.externals || [];
+      config.externals.push('wallabyjs.console-ninja');
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

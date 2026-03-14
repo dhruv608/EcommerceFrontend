@@ -28,7 +28,14 @@ export default function LoginPage() {
 
       const res = await api.post("/auth/login", { email, password });
 
-      login(res.data.accessToken); // 🔥 CONTEXT
+      const userData = {
+        userId: res.data.userId,
+        name: res.data.name,
+        email: res.data.email,
+        role: res.data.role
+      };
+
+      login(userData); // 🔥 CONTEXT
       toast.success("Login successful");
       router.push("/");
     } catch {

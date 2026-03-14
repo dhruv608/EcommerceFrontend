@@ -3,58 +3,53 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Store, LayoutDashboard, Package, Layers, ChevronLeft, ChevronRight } from "lucide-react";
+import { Store, LayoutDashboard, Package, Layers, ChevronLeft, ChevronRight, LogOut, ShoppingCart } from "lucide-react";
 import { Button } from "../ui/button";
+import { useAdminAuth } from "@/context/AdminAuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(true);
+  const { adminLogout } = useAdminAuth();
+  const router = useRouter();
 
   const linkClass = (path: string) =>
-    `flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition
+    `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition
      ${
        pathname === path
-         ? "bg-emerald-600 text-white"
-         : "text-gray-600 hover:bg-gray-100"
+         ? "bg-[#acac49]/15 text-[#acac49]"
+         : "text-[#555] hover:bg-[#f5f5ea]"
      }`;
+
+  const handleLogout = () => {
+    adminLogout();
+    router.push("/");
+  };
 
   return (
     <aside
-      className={`h-screen bg-white border-r transition-all duration-300
-        ${open ? "w-64" : "w-16"}`}
+      className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-[#eee] z-50"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
+      {/* Brand Header */}
+      <div className="flex items-center justify-center p-6">
         <div className="flex items-center gap-2">
-          <Store className="text-emerald-600" />
-          {open && (
-            <span className="font-bold text-lg">
-              Light Store
-            </span>
-          )}
+          <Store className="text-[#acac49]" />
+          <span className="font-bold text-lg tracking-wide">
+            <span className="text-black">Light</span>
+            <span className="text-[#acac49]"> Store</span>
+          </span>
         </div>
-
-        <Button 
-          onClick={() => setOpen(!open)}
-          className="text-gray-500 hover:text-gray-800 bg-white hover:bg-white -mx-0.5"
-        >
-          {open ? <ChevronLeft /> : <ChevronRight />}
-        </Button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex flex-col gap-1 p-3">
-        <Link href="/admin" className={linkClass("/admin")}>
-          <LayoutDashboard size={18} />
-          {open && <span>Dashboard</span>}
-        </Link>
-
+      <nav className="flex flex-col gap-1 px-4">
         <Link
           href="/admin/products"
           className={linkClass("/admin/products")}
         >
           <Package size={18} />
-          {open && <span>Products</span>}
+          <span>Products</span>
         </Link>
 
         <Link
@@ -62,9 +57,29 @@ export default function Sidebar() {
           className={linkClass("/admin/categories")}
         >
           <Layers size={18} />
-          {open && <span>Categories</span>}
+          <span>Categories</span>
+        </Link>
+
+        <Link
+          href="/admin/orders"
+          className={linkClass("/admin/orders")}
+        >
+          <ShoppingCart size={18} />
+          <span>Orders</span>
         </Link>
       </nav>
+
+      {/* Logout Button */}
+      <div className="absolute bottom-5 left-5 right-5">
+        <Button
+          onClick={handleLogout}
+          variant="ghost"
+          className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2"
+        >
+          <LogOut size={18} />
+          <span>Logout</span>
+        </Button>
+      </div>
     </aside>
   );
 }

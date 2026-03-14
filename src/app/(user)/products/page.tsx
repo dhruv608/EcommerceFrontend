@@ -2,6 +2,7 @@ import { Category, Product } from "@/lib/types";
 import api from "@/lib/api";
 import FilterSidebar from "@/components/products/FilterSidebar";
 import MobileFilter from "@/components/products/MobileFilter";
+import SearchBar from "@/components/products/SearchBar";
 import SortSelect from "@/components/products/SortSelect";
 import ProductCard from "@/components/products/ProductCard";
 import { Separator } from "@/components/ui/separator";
@@ -19,8 +20,8 @@ async function getProducts(
   if (typeof params.categoryId === "string")
     query.append("categoryId", params.categoryId);
 
-  if (typeof params.minPrice === "string")
-    query.append("minPrice", params.minPrice);
+  if (typeof params.search === "string")
+    query.append("search", params.search);
 
   if (typeof params.maxPrice === "string")
     query.append("maxPrice", params.maxPrice);
@@ -99,26 +100,25 @@ export default async function ProductsPage({
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
-        <div>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div className="flex-1">
           <h1 className="text-4xl font-black tracking-tight text-gray-900 capitalize">
             {currentCategoryName}
           </h1>
           <p className="text-muted-foreground mt-2 text-sm">
-            Showing {productData.totalElements} results based on your filters
+            Showing {productData.totalElements} results
           </p>
         </div>
-
         <div className="flex items-center gap-2 w-full md:w-auto">
           <MobileFilter categories={categories} />
+          <SearchBar />
           <SortSelect />
         </div>
       </div>
-
-      <Separator className="mb-8" />
+      <Separator className="mb-6" />
 
       <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
-        <aside className="hidden md:block sticky top-24 h-fit">
+        <aside className="hidden md:block sticky top-[100px] h-fit">
           <FilterSidebar categories={categories} />
         </aside>
 

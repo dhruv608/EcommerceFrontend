@@ -1,30 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProductContent } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Minus, Plus, ShoppingCart, Heart, Truck, ShieldCheck } from "lucide-react";
+import { Heart, Truck, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import { useAuthModal } from "@/context/AuthModalContext";
+import SmartAddToCart from "./SmartAddToCart";
 
 export default function UserProductInfo({ product }: { product: ProductContent }) {
-  const [quantity, setQuantity] = useState(1);
+  const { isLoggedIn } = useAuth();
+  const { openAuthModal } = useAuthModal();
   
-
-  // --- Logic ---
-  const increaseQty = () => setQuantity((prev) => (prev < product.stock ? prev + 1 : prev));
-  const decreaseQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-
-  const handleAddToCart = () => {
-    // Yahan Cart Context ya API call aayega
-    console.log("Adding to cart:", product.name, quantity);
-    toast(
-    
-      `description: ${product.name} (x${quantity}) added!`,
-    );
-  };
-
+  // Check if product is in cart
+  const [isInCart, setIsInCart] = useState(false);
+  
   // Fake Discount Calculation (Sirf show off ke liye)
   const originalPrice = product.price * 1.25; 
 
@@ -73,59 +66,48 @@ export default function UserProductInfo({ product }: { product: ProductContent }
         <p>{product.description}</p>
       </div>
 
-      {/* 3. Selectors & Actions */}
-      <div className="space-y-6">
-        
-        {/* Quantity */}
-        <div className="flex items-center gap-4">
-          <span className="text-sm font-bold text-gray-900">Quantity</span>
-          <div className="flex items-center border border-gray-300 rounded-lg bg-white">
-            <Button onClick={decreaseQty} className="p-3 hover:bg-gray-100 disabled:opacity-50 transition" disabled={quantity <= 1}>
-              <Minus className="w-4 h-4" />
-            </Button>
-            <span className="w-12 text-center font-bold">{quantity}</span>
-            <Button onClick={increaseQty} className="p-3 hover:bg-gray-100 disabled:opacity-50 transition" disabled={quantity >= product.stock}>
-              <Plus className="w-4 h-4" />
+      {/* 3. Smart Add to Cart */}
+      <div className="space-y-4">
+        {isLoggedIn ? (
+          <SmartAddToCart
+            productId={product.id}
+            productName={product.name}
+            productPrice={product.price}
+            productImage={product.images?.[0]}
+            disabled={!product.isActive || product.stock === 0}
+            className="w-full"
+          />
+        ) : (
+          <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+            <p className="text-gray-900 mb-4 font-medium">Sign in to add this item to your cart</p>
+            <Button 
+              onClick={() => openAuthModal("login")} 
+              className="bg-[#acac49] hover:bg-[#9a9a42] text-white rounded-lg px-6 py-3 font-medium transition-all duration-200"
+            >
+              Sign In to Continue
             </Button>
           </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-3">
-          <Button 
-            size="lg" 
-            className="flex-1 h-14 text-base font-bold bg-black hover:bg-gray-800 shadow-xl transition-all hover:-translate-y-1"
-            onClick={handleAddToCart}
-            disabled={product.stock === 0}
-          >
-            <ShoppingCart className="mr-2 w-5 h-5" />
-            {product.stock > 0 ? "Add to Cart" : "Sold Out"}
-          </Button>
-          
-          <Button size="icon" variant="outline" className="h-14 w-14 border-2 hover:bg-gray-50 hover:text-red-500 transition-colors">
-            <Heart className="w-6 h-6" />
-          </Button>
-        </div>
+        )}
       </div>
 
       {/* 4. Trust Badges (Design element) */}
       <div className="grid grid-cols-2 gap-4 pt-4">
-        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
           <div className="p-2 bg-white rounded-full shadow-sm">
-            <Truck className="w-5 h-5 text-indigo-600" />
+            <Truck className="w-5 h-5 text-[#acac49]" />
           </div>
           <div className="flex flex-col">
-            <span className="text-xs font-bold text-gray-900">Free Delivery</span>
-            <span className="text-[10px] text-gray-500">Orders over ₹999</span>
+            <span className="text-sm font-medium text-gray-900">Free Delivery</span>
+            <span className="text-xs text-gray-500">Orders over ₹999</span>
           </div>
         </div>
-        <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
           <div className="p-2 bg-white rounded-full shadow-sm">
-            <ShieldCheck className="w-5 h-5 text-indigo-600" />
+            <ShieldCheck className="w-5 h-5 text-[#acac49]" />
           </div>
           <div className="flex flex-col">
-            <span className="text-xs font-bold text-gray-900">Secure Payment</span>
-            <span className="text-[10px] text-gray-500">100% Protected</span>
+            <span className="text-sm font-medium text-gray-900">Secure Payment</span>
+            <span className="text-xs text-gray-500">100% Protected</span>
           </div>
         </div>
       </div>

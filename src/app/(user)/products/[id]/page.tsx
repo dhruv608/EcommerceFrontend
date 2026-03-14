@@ -55,7 +55,7 @@ export default async function ProductDetailPage({
       {/* Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
         {/* Gallery */}
-        <div className="overflow-hidden rounded-2xl">
+        <div>
           <ProductGallery images={product.images || []} />
         </div>
 

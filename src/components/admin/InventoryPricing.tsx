@@ -1,6 +1,6 @@
 export default function InventoryPricing({ product }: any) {
   return (
-    <div className="bg-white p-6 rounded border space-y-4">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-4">
       <h2 className="font-medium">Inventory & Pricing</h2>
 
       <div className="flex justify-between">
