@@ -27,27 +27,34 @@ export default function AdminLayout({
     setShowAuthModal(false);
   };
 
-  if (!isAdminLoggedIn) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="mb-8">
-            <div className="mx-auto h-16 w-16 bg-emerald-100 rounded-full flex items-center justify-center mb-4">
-              <Shield className="h-8 w-8 text-emerald-600" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Admin Panel</h1>
-            <p className="text-gray-600">Authentication required</p>
-          </div>
+if (!isAdminLoggedIn) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <div className="mb-8">
           
-          <AdminAuthModal 
-            isOpen={showAuthModal} 
-            onClose={() => router.push("/")}
-          />
-        </div>
-      </div>
-    );
-  }
+          <div className="mx-auto h-16 w-16 bg-[#ACAC49]/20 rounded-full flex items-center justify-center mb-4">
+            <Shield className="h-8 w-8 text-[#ACAC49]" />
+          </div>
 
+          <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+            Admin Panel
+          </h1>
+
+          <p className="text-gray-600">
+            Authentication required
+          </p>
+
+        </div>
+
+        <AdminAuthModal 
+          isOpen={showAuthModal} 
+          onClose={() => router.push("/")}
+        />
+      </div>
+    </div>
+  );
+}
   return (
     <div className="min-h-screen">
       <Sidebar />

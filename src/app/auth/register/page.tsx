@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -42,8 +43,23 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md bg-white p-6 rounded-lg border space-y-4">
-
-        <h1 className="text-2xl font-semibold text-center">Register</h1>
+        {/* Logo and Brand */}
+        <div className="flex flex-col items-center space-y-4">
+          <Image 
+            src="/logo.svg" 
+            alt="Light Store Logo" 
+            width={32}
+            height={32}
+            className="h-8 w-auto"
+          />
+          <div className="text-center">
+            <h1 className="font-semibold text-lg tracking-tight">
+              <span className="text-black">Light</span>
+              <span className="text-[#acac49]"> Store</span>
+            </h1>
+            <h2 className="text-2xl font-semibold text-gray-900">Register</h2>
+          </div>
+        </div>
 
         <Input
           placeholder="Full Name"
@@ -66,7 +82,7 @@ export default function RegisterPage() {
         />
 
         <Button
-          className="w-full bg-emerald-600"
+          className="w-full bg-[#acac49] hover:bg-[#9a9a42]"
           onClick={handleRegister}
           disabled={loading}
         >
@@ -77,7 +93,7 @@ export default function RegisterPage() {
           Already have an account?{" "}
           <Link
             href="/auth/login"
-            className="text-emerald-600 font-medium"
+            className="text-[#acac49] font-medium"
           >
             Login
           </Link>

@@ -74,27 +74,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Add item to cart
   const addToCart = async (productId: number, quantity: number) => {
-    if (!isLoggedIn || !user) {
-      toast.error("Please login to add items to cart");
-      return;
+    // Authentication check is handled in the component (SmartAddToCart.tsx)
+    // This function assumes user is authenticated when called
+    
+    if (!user?.userId) {
+      throw new Error("User not authenticated");
     }
-
+    
     try {
       setLoading(true);
-      await api.post(`/cart/add?userId=${user.userId}`, {
+      await api.post(`/cart/add?userId=${user!.userId}`, {
         productId,
         quantity,
       });
       
-      toast.success("Item added to cart");
       await fetchCart(); // Refresh cart
     } catch (error: any) {
       console.error("Failed to add to cart:", error);
-      if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Failed to add item to cart");
-      }
+      // Don't show toast here - let the component handle error display
+      throw error; // Re-throw to let component handle the error
     } finally {
       setLoading(false);
     }

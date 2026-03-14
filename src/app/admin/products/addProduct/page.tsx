@@ -3,8 +3,8 @@ import { toast } from "sonner"
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Spinner } from "@/components/ui/spinner"
+import ToggleSwitch from "@/components/admin/ToggleSwitch";
 import {
   Select,
   SelectContent,
@@ -101,15 +101,15 @@ export default function AddProductPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="px-8 py-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Add New Product</h1>
         <div className="flex gap-2">
           <Link href={"/admin/products"}>
-            <Button variant="outline">Discard</Button>
+            <Button variant="outline" className="border border-gray-300 hover:bg-gray-100 rounded-lg px-5 py-2">Discard</Button>
           </Link>
-          <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={handleSubmit}
+          <Button className="bg-[#ACAC49] hover:bg-[#9a9a42] text-white rounded-lg px-5 py-2" onClick={handleSubmit}
             disabled={isSubmitting}
           >
             {isSubmitting ? <Spinner /> : ""}
@@ -123,7 +123,7 @@ export default function AddProductPage() {
         {/* LEFT SIDE */}
         <div className="col-span-2 space-y-6">
           {/* General Info */}
-          <div className="bg-white p-6 rounded-lg border space-y-4">
+          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
             <h2 className="font-medium">General Information</h2>
 
             <Input placeholder="Product Name"
@@ -131,6 +131,7 @@ export default function AddProductPage() {
               name="name"
               required
               onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]"
             />
 
             <Textarea
@@ -139,15 +140,16 @@ export default function AddProductPage() {
               onChange={handleChange}
               placeholder="Product description"
               rows={4}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]"
             />
           </div>
 
 
           {/* Media */}
-          <div className="bg-white p-6 rounded-lg border space-y-4">
+          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
             <h2 className="font-medium">Media</h2>
 
-            <div className="border-2 border-dashed rounded-lg p-6 text-center text-sm text-gray-500">
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center text-sm text-gray-500 hover:border-[#ACAC49] transition-colors">
               Click to upload or drag & drop
               <br />
               PNG, JPG up to 4 images
@@ -161,6 +163,7 @@ export default function AddProductPage() {
                   setImages(Array.from(e.target.files));
                 }
               }}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]"
             />
             {/* Preview Grid */}
             {images.length > 0 && (
@@ -196,10 +199,10 @@ export default function AddProductPage() {
           </div>
 
           {/* Pricing */}
-          <div className="bg-white p-6 rounded-lg border space-y-4">
+          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
             <h2 className="font-medium">Pricing</h2>
 
-            <Input type="text" placeholder="Price (₹)" value={product.price} name="price" onChange={handleChange} />
+            <Input type="text" placeholder="Price (₹)" value={product.price} name="price" onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]" />
           </div>
 
         </div>
@@ -208,25 +211,24 @@ export default function AddProductPage() {
         {/* RIGHT SIDE */}
         <div className="space-y-6">
           {/* Status */}
-          <div className="bg-white p-6 rounded-lg border space-y-4">
+          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
             <h2 className="font-medium">Status</h2>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between py-2">
               <span>Active</span>
-              <Switch defaultChecked
+              <ToggleSwitch
                 checked={product.isActive}
-                onCheckedChange={(val) =>
+                onChange={(val) =>
                   setProduct(prev => ({ ...prev, isActive: val }))
-
                 }
               />
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between py-2">
               <span>Featured</span>
-              <Switch
+              <ToggleSwitch
                 checked={product.isFeatured}
-                onCheckedChange={(val) =>
+                onChange={(val) =>
                   setProduct(prev => ({ ...prev, isFeatured: val }))
                 }
               />
@@ -234,31 +236,41 @@ export default function AddProductPage() {
           </div>
 
           {/* Organization */}
-          <div className="bg-white p-6 rounded-lg border space-y-4">
+          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
+            <h2 className="font-medium">Category / Stock</h2>
 
-            <Select
-              onValueChange={(val) =>
-                setProduct(prev => ({ ...prev, categoryId: val }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
+            <div className="space-y-4">
+              <div className="relative">
+                <Select
+                  onValueChange={(val) =>
+                    setProduct(prev => ({ ...prev, categoryId: val }))
+                  }
+                >
+                  <SelectTrigger className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent className="absolute z-50 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 w-full">
+                    {categories.map((category) => (
+                      <SelectItem
+                        key={category.id}
+                        value={String(category.id)}
+                      >
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-                {categories.map((category) => (
-                  <SelectItem
-                    key={category.id}
-                    value={String(category.id)}
-                  >
-                    {category.name}
-                  </SelectItem>
-                ))}
-
-              </SelectContent>
-            </Select>
-
-            <Input type="number" placeholder="Stock" value={product.stock} name="stock" onChange={handleChange} />
+              <Input 
+                type="number" 
+                placeholder="Stock" 
+                value={product.stock} 
+                name="stock" 
+                onChange={handleChange} 
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]" 
+              />
+            </div>
           </div>
         </div>
       </div>

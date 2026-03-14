@@ -129,9 +129,16 @@ export default function AuthModal() {
     <Dialog open={isOpen} onOpenChange={closeAuthModal}>
       <DialogContent className="sm:max-w-lg bg-white rounded-2xl shadow-xl p-8">
         <DialogHeader className="pb-8">
-          <DialogTitle className="text-center text-2xl font-bold text-foreground">
-            Welcome to <span className="text-black">LIGHT</span><span className="text-[#acac49]">STORE</span>
-          </DialogTitle>
+          <div className="flex flex-col items-center space-y-3">
+            <img 
+              src="/logo.svg" 
+              alt="Light Store Logo" 
+              className="h-8 w-auto"
+            />
+            <DialogTitle className="text-center text-2xl font-bold text-foreground">
+              Welcome to <span className="text-black">Light</span><span className="text-[#acac49]"> Store</span>
+            </DialogTitle>
+          </div>
           <p className="text-center text-sm text-muted-foreground mt-3">
             Your trusted online shopping destination
           </p>

@@ -3,10 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ProductContent } from "@/lib/types";
-import { ShoppingBag, Plus, Loader2, Minus, Trash2, ShoppingCart } from "lucide-react";
+import { ShoppingBag, Plus, Loader2, Minus, Trash2, ShoppingCart, LogIn } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -17,6 +18,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, priority = false }: ProductCardProps) {
   const { addToCart, updateQuantity, removeFromCart, loading, cartItems } = useCart();
+  const { isLoggedIn, user } = useAuth();
   const [addingToCart, setAddingToCart] = useState(false);
   
   // Check if product is in cart and get its quantity
@@ -37,12 +39,23 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
       return;
     }
 
+    // Check authentication before adding to cart
+    if (!isLoggedIn || !user) {
+      toast.warning("Please sign in to add items to your cart", {
+        icon: <LogIn className="w-4 h-4" />,
+      });
+      return;
+    }
+
     try {
       setAddingToCart(true);
       await addToCart(product.id, 1);
-      toast.success("Added to cart successfully!");
+      toast.success("Item added to cart", {
+        icon: <ShoppingCart className="w-4 h-4" />,
+      });
     } catch (error) {
-      toast.error("Failed to add to cart");
+      console.error("Failed to add to cart:", error);
+      toast.error("Failed to add item to cart");
     } finally {
       setAddingToCart(false);
     }

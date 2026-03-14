@@ -94,10 +94,17 @@ export default function Navbar() {
             
             {/* LEFT - Logo */}
             <div className="flex items-center">
-              <Link href="/" className="flex items-center group">
-                <h1 className="text-2xl lg:text-2xl font-bold tracking-wide transition-colors cursor-pointer">
-                  <span className="text-black">LIGHT</span>
-                  <span className="text-[#acac49] group-hover:text-[#98983e]"> STORE</span>
+              <Link href="/" className="flex items-center gap-2 group">
+                <Image 
+                  src="/logo.svg" 
+                  alt="Light Store Logo" 
+                  width={32}
+                  height={32}
+                  className="h-8 w-auto"
+                />
+                <h1 className="font-semibold text-lg tracking-tight transition-colors cursor-pointer">
+                  <span className="text-black">Light</span>
+                  <span className="text-[#acac49] group-hover:text-[#98983e]"> Store</span>
                 </h1>
               </Link>
             </div>
@@ -161,13 +168,15 @@ export default function Navbar() {
                 </button>
               )}
 
-              {/* Orders */}
-              <button
-                onClick={handleOrdersClick}
-                className="p-2 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
-              >
-                <Package className="w-5 h-5" />
-              </button>
+              {/* Orders - Only show for logged in users */}
+              {isLoggedIn && (
+                <button
+                  onClick={handleOrdersClick}
+                  className="p-2 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
+                >
+                  <Package className="w-5 h-5" />
+                </button>
+              )}
 
               {/* Cart */}
               <button

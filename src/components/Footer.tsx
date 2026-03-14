@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Instagram, Facebook, Twitter } from "lucide-react";
 
 export default function Footer() {
@@ -11,10 +12,19 @@ export default function Footer() {
           
           {/* Brand Section */}
           <div className="text-center md:text-left">
-            <h3 className="font-semibold text-lg mb-1 tracking-wide">
-              <span className="text-black">LIGHT</span>
-              <span className="text-[#acac49]"> STORE</span>
-            </h3>
+            <div className="flex items-center gap-2 mb-1">
+              <Image 
+                src="/logo.svg" 
+                alt="Light Store Logo" 
+                width={24}
+                height={24}
+                className="h-6 w-auto"
+              />
+              <h3 className="font-semibold text-lg tracking-wide">
+                <span className="text-black">Light</span>
+                <span className="text-[#acac49]"> Store</span>
+              </h3>
+            </div>
             <p className="text-sm text-gray-500">Quality fashion for everyday style.</p>
           </div>
 

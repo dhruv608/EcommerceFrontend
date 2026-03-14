@@ -17,15 +17,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { getCategories } from "@/lib/getCategories";
 import api from "@/lib/api";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import LightStorePagination from "@/components/ui/LightStorePagination";
 
 export default function ProductsClient({
   initialData,
@@ -61,19 +53,6 @@ export default function ProductsClient({
     // third click → reset
     setSortBy(null);
     setDirection(null);
-  }
-
-  function getPageNumbers(current: number, total: number) {
-    const pages: number[] = [];
-
-    const start = Math.max(0, current - 2);
-    const end = Math.min(total - 1, current + 2);
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-
-    return pages;
   }
 
   useEffect(() => {
@@ -151,7 +130,7 @@ export default function ProductsClient({
         </div>
 
         {/* Filter Bar */}
-        <div className="bg-white rounded-xl p-3.5 mb-6 border border-[#eeeeee]">
+        <div className="bg-white rounded-xl p-3.5 mb-6 border border-[#eeeeee] overflow-visible">
           <div className="flex flex-col lg:flex-row gap-2.5">
             {/* Search */}
             <div className="flex-1">
@@ -169,89 +148,67 @@ export default function ProductsClient({
             
             {/* Filters */}
             <div className="flex gap-2.5">
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-44 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
-                  <SelectValue placeholder="All Categories" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map((category) => (
-                    <SelectItem
-                      key={category.id}
-                      value={String(category.id)}
-                    >
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="relative w-44">
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger className="w-full bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
+                    <SelectValue placeholder="All Categories" />
+                  </SelectTrigger>
+                  <SelectContent className="absolute left-0 top-full mt-1 z-50 bg-white border border-gray-200 rounded-lg shadow-lg w-full">
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem
+                        key={category.id}
+                        value={String(category.id)}
+                        className="hover:bg-gray-100 cursor-pointer"
+                      >
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger className="w-36 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
-                  <SelectValue placeholder="All Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="relative w-36">
+                <Select value={status} onValueChange={setStatus}>
+                  <SelectTrigger className="w-full bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
+                    <SelectValue placeholder="All Status" />
+                  </SelectTrigger>
+                  <SelectContent className="absolute left-0 top-full mt-1 z-50 bg-white border border-gray-200 rounded-lg shadow-lg w-full">
+                    <SelectItem value="all" className="hover:bg-gray-100 cursor-pointer">All</SelectItem>
+                    <SelectItem value="active" className="hover:bg-gray-100 cursor-pointer">Active</SelectItem>
+                    <SelectItem value="inactive" className="hover:bg-gray-100 cursor-pointer">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <Select value={feature} onValueChange={setFeature}>
-                <SelectTrigger className="w-36 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
-                  <SelectValue placeholder="All Featured" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="feature">Featured</SelectItem>
-                  <SelectItem value="unfeature">UnFeatured</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="relative w-36">
+                <Select value={feature} onValueChange={setFeature}>
+                  <SelectTrigger className="w-full bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
+                    <SelectValue placeholder="All Featured" />
+                  </SelectTrigger>
+                  <SelectContent className="absolute left-0 top-full mt-1 z-50 bg-white border border-gray-200 rounded-lg shadow-lg w-full">
+                    <SelectItem value="all" className="hover:bg-gray-100 cursor-pointer">All</SelectItem>
+                    <SelectItem value="feature" className="hover:bg-gray-100 cursor-pointer">Featured</SelectItem>
+                    <SelectItem value="unfeature" className="hover:bg-gray-100 cursor-pointer">UnFeatured</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Products Table */}
-        <div className="bg-white rounded-xl border border-[#ececec] overflow-hidden shadow-[0_3px_10px_rgba(0,0,0,0.04)]">
+        <div className="bg-white rounded-xl border border-[#ececec] overflow-hidden shadow-[0_3px_10px_rgba(0,0,0,0.04)] relative z-0">
           <ProductsTable products={products} sortBy={sortBy} direction={direction} onSort={handleSort} />
         </div>
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <Pagination className="justify-center mt-6">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => setPage(p => p - 1)}
-                  className={isFirst ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                />
-              </PaginationItem>
-
-              {page > 2 && (
-                <>
-                  <PaginationItem>
-                    <PaginationLink onClick={() => setPage(1)}>1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                </>
-              )}
-
-              {getPageNumbers(page, totalPages).map(p => (
-                <PaginationItem key={p}>
-                  <PaginationLink onClick={() => setPage(p)}>{p}</PaginationLink>
-                </PaginationItem>
-              ))}
-
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => setPage(p => p + 1)}
-                  className={isLast ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <LightStorePagination
+            currentPage={page + 1} // Convert 0-based to 1-based
+            totalPages={totalPages}
+            onPageChange={(newPage) => setPage(newPage - 1)} // Convert 1-based to 0-based
+          />
         )}
       </div>
     </div>

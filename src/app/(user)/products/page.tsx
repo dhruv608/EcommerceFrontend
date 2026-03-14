@@ -6,9 +6,8 @@ import SearchBar from "@/components/products/SearchBar";
 import SortSelect from "@/components/products/SortSelect";
 import ProductCard from "@/components/products/ProductCard";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import ProductPagination from "@/components/products/ProductPagination";
 
 // --- API FETCH FUNCTIONS ---
 
@@ -83,20 +82,6 @@ export default async function ProductsPage({
       (c) => c.id.toString() === params.categoryId
     )?.name || "All Collection";
 
-  const createPageUrl = (newPage: number) => {
-    const urlParams = new URLSearchParams();
-
-    Object.keys(params).forEach((key) => {
-      const value = params[key];
-      if (typeof value === "string") {
-        urlParams.set(key, value);
-      }
-    });
-
-    urlParams.set("page", newPage.toString());
-    return `/products?${urlParams.toString()}`;
-  };
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* HEADER */}
@@ -136,35 +121,10 @@ export default async function ProductsPage({
               </div>
 
               {productData.totalPages > 1 && (
-                <div className="mt-12 flex justify-center items-center gap-4">
-                  <Button variant="outline" disabled={productData.first} asChild={!productData.first}>
-                    {productData.first ? (
-                      <span className="flex items-center gap-1 text-gray-400">
-                        <ChevronLeft className="w-4 h-4" /> Prev
-                      </span>
-                    ) : (
-                      <Link href={createPageUrl(productData.number - 1)}>
-                        <ChevronLeft className="w-4 h-4" /> Prev
-                      </Link>
-                    )}
-                  </Button>
-
-                  <span className="text-sm font-medium text-gray-600">
-                    Page {productData.number + 1} of {productData.totalPages}
-                  </span>
-
-                  <Button variant="outline" disabled={productData.last} asChild={!productData.last}>
-                    {productData.last ? (
-                      <span className="flex items-center gap-1 text-gray-400">
-                        Next <ChevronRight className="w-4 h-4" />
-                      </span>
-                    ) : (
-                      <Link href={createPageUrl(productData.number + 1)}>
-                        Next <ChevronRight className="w-4 h-4" />
-                      </Link>
-                    )}
-                  </Button>
-                </div>
+                <ProductPagination
+                  currentPage={productData.number + 1}
+                  totalPages={productData.totalPages}
+                />
               )}
             </>
           ) : (

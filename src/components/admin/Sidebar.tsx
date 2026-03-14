@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Store, LayoutDashboard, Package, Layers, ChevronLeft, ChevronRight, LogOut, ShoppingCart } from "lucide-react";
+import { LayoutDashboard, Package, Layers, ChevronLeft, ChevronRight, LogOut, ShoppingCart } from "lucide-react";
 import { Button } from "../ui/button";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { useRouter } from "next/navigation";
@@ -32,11 +33,17 @@ export default function Sidebar() {
       className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-[#eee] z-50"
     >
       {/* Brand Header */}
-      <div className="flex items-center justify-center p-6">
+      <div className="flex items-center justify-center px-6 py-5">
         <div className="flex items-center gap-2">
-          <Store className="text-[#acac49]" />
-          <span className="font-bold text-lg tracking-wide">
-            <span className="text-black">Light</span>
+          <Image 
+            src="/logo.svg" 
+            alt="Light Store Logo" 
+            width={24}
+            height={24}
+            className="h-6 w-auto"
+          />
+          <span className="font-semibold text-xl tracking-tight">
+            <span className="text-gray-900">Light</span>
             <span className="text-[#acac49]"> Store</span>
           </span>
         </div>

@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
-import { Minus, Plus, ShoppingBag, Loader2 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { Minus, Plus, ShoppingBag, Loader2, ShoppingCart, LogIn } from "lucide-react";
 import { toast } from "sonner";
 
 interface SmartAddToCartProps {
@@ -24,6 +25,7 @@ export default function SmartAddToCart({
   disabled = false 
 }: SmartAddToCartProps) {
   const { addToCart, updateQuantity, removeFromCart, loading, cartItems } = useCart();
+  const { isLoggedIn, user } = useAuth();
   const [isInCart, setIsInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
@@ -38,12 +40,22 @@ export default function SmartAddToCart({
   const handleAddToCart = async () => {
     if (disabled || isAdding) return;
 
+    // Check authentication before adding to cart
+    if (!isLoggedIn || !user) {
+      toast.warning("Please sign in to add items to your cart", {
+        icon: <LogIn className="w-4 h-4" />,
+      });
+      return;
+    }
+
     try {
       setIsAdding(true);
       await addToCart(productId, 1);
       setIsInCart(true);
       setQuantity(1);
-      toast.success(`${productName} added to cart`);
+      toast.success("Item added to cart", {
+        icon: <ShoppingCart className="w-4 h-4" />,
+      });
     } catch (error) {
       console.error("Failed to add to cart:", error);
       toast.error("Failed to add item to cart");
