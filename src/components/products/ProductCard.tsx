@@ -91,7 +91,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
             alt={product.name}
             fill
             priority={priority} 
-            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1200px) 33vw, 25vw"
             className={`object-cover w-full h-full transition-all duration-700 ease-in-out ${
               hoverImage ? "group-hover:opacity-0" : "group-hover:scale-105"
             }`}
@@ -103,7 +103,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
               src={hoverImage}
               alt={product.name}
               fill
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+              sizes="(max-width: 640px) 50vw, (max-width: 1200px) 33vw, 25vw"
               className="absolute inset-0 object-cover w-full h-full opacity-0 transition-all duration-700 ease-in-out group-hover:opacity-100 group-hover:scale-105"
             />
           )}

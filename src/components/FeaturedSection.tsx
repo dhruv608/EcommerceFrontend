@@ -43,7 +43,7 @@ const FeaturedSection = ({
           <span className="group-hover:translate-x-1 transition-transform">→</span>
         </Link>
         {/*  Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
           {allFeaturedProducts.map((product) => (
             <Link key={product.id} href={`products/${product.id}`}>
  
