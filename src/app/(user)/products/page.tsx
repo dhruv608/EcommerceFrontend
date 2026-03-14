@@ -84,27 +84,37 @@ export default function ProductsPage({
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const params = await searchParams;
-        console.log("Fetching products with params:", params); // Debug log
-        setResolvedSearchParams(params);
-        
-        const [productResponse, categoriesResponse] = await Promise.all([
-          getProducts(params),
-          getCategories(),
-        ]);
+      // Always use manual URL parsing since searchParams Promise doesn't work in production
+      const urlParams = new URLSearchParams(window.location.search);
+      const manualParams: Record<string, string | string[] | undefined> = {};
+      urlParams.forEach((value, key) => {
+        manualParams[key] = value;
+      });
+      console.log("Using manual URL params:", manualParams);
+      setResolvedSearchParams(manualParams);
+      
+      const [productResponse, categoriesResponse] = await Promise.all([
+        getProducts(manualParams),
+        getCategories(),
+      ]);
 
-        setProductData(productResponse);
-        setCategories(categoriesResponse);
-      } catch (error) {
-        console.error("Error in fetchData:", error);
-        // Fallback: parse URL manually
+      setProductData(productResponse);
+      setCategories(categoriesResponse);
+    };
+
+    fetchData();
+  }, []); // Remove searchParams dependency since we're not using it
+
+  // Listen for URL changes to refetch data
+  useEffect(() => {
+    const handleRouteChange = () => {
+      const fetchData = async () => {
         const urlParams = new URLSearchParams(window.location.search);
         const manualParams: Record<string, string | string[] | undefined> = {};
         urlParams.forEach((value, key) => {
           manualParams[key] = value;
         });
-        console.log("Fallback: using manual URL params:", manualParams);
+        console.log("Route changed, using manual URL params:", manualParams);
         setResolvedSearchParams(manualParams);
         
         const [productResponse, categoriesResponse] = await Promise.all([
@@ -114,32 +124,6 @@ export default function ProductsPage({
 
         setProductData(productResponse);
         setCategories(categoriesResponse);
-      }
-    };
-
-    fetchData();
-  }, [searchParams]);
-
-  // Also add a listener for URL changes
-  useEffect(() => {
-    const handleRouteChange = () => {
-      // Refetch data when URL changes
-      const fetchData = async () => {
-        try {
-          const params = await searchParams;
-          console.log("Route changed, refetching with params:", params);
-          setResolvedSearchParams(params);
-          
-          const [productResponse, categoriesResponse] = await Promise.all([
-            getProducts(params),
-            getCategories(),
-          ]);
-
-          setProductData(productResponse);
-          setCategories(categoriesResponse);
-        } catch (error) {
-          console.error("Error in route change handler:", error);
-        }
       };
 
       fetchData();
@@ -151,7 +135,7 @@ export default function ProductsPage({
     return () => {
       window.removeEventListener('popstate', handleRouteChange);
     };
-  }, [searchParams]);
+  }, []); // Remove searchParams dependency
 
   const currentCategoryName =
     categories.find(
