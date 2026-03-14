@@ -12,8 +12,19 @@ import { Category } from "@/lib/types";
 
 export default function MobileFilter({ categories }: { categories: Category[] }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = React.useState(false);
+
+  // Manual URL parsing since useSearchParams doesn't work in production
+  const getManualParams = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const params: Record<string, string | string[] | undefined> = {};
+    for (const [key, value] of urlParams.entries()) {
+      params[key] = value;
+    }
+    return params;
+  };
+
+  const searchParams = getManualParams();
 
   // 1. Initial State from URL
   const selectedCategoryId = searchParams.get("categoryId");
@@ -39,7 +50,7 @@ export default function MobileFilter({ categories }: { categories: Category[] })
 
   // 2. Filter Update Logic
   const updateFilter = (key: string, value: string | null) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     if (value) {
       params.set(key, value);
     } else {

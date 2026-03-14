@@ -15,7 +15,18 @@ interface FilterSidebarProps {
 
 export default function FilterSidebar({ categories }: FilterSidebarProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  
+  // Manual URL parsing since useSearchParams doesn't work in production
+  const getManualParams = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const params: Record<string, string | string[] | undefined> = {};
+    for (const [key, value] of urlParams.entries()) {
+      params[key] = value;
+    }
+    return params;
+  };
+
+  const searchParams = getManualParams();
 
   // 1. Initial State from URL
   const selectedCategoryId = searchParams.get("categoryId");
@@ -26,9 +37,47 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
   const [minPrice, setMinPrice] = React.useState(minPriceParam);
   const [maxPrice, setMaxPrice] = React.useState(maxPriceParam);
 
+  // Listen for URL changes to update filters automatically
+  React.useEffect(() => {
+    const handleUrlChange = () => {
+      const newParams = getManualParams();
+      const newCategoryId = newParams.get("categoryId");
+      const newMinPrice = Number(newParams.get("minPrice")) || 0;
+      const newMaxPrice = Number(newParams.get("maxPrice")) || 5000;
+      
+      // Update local state if URL parameters changed
+      if (newCategoryId !== undefined && newCategoryId !== selectedCategoryId) {
+        // Note: We don't update categoryId here as it's handled by URL change
+      }
+      
+      if (newMinPrice !== minPrice) {
+        setMinPrice(newMinPrice);
+      }
+      
+      if (newMaxPrice !== maxPrice) {
+        setMaxPrice(newMaxPrice);
+      }
+    };
+
+    // Listen for popstate events (browser back/forward)
+    window.addEventListener('popstate', handleUrlChange);
+    
+    // Listen for hashchange events
+    window.addEventListener('hashchange', handleUrlChange);
+    
+    // Custom event for URL changes
+    window.addEventListener('urlchange', handleUrlChange);
+    
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+      window.removeEventListener('urlchange', handleUrlChange);
+    };
+  }, []); // Remove dependencies to prevent re-render loops
+
   // 2. Filter Update Logic
   const updateFilter = (key: string, value: string | null) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     if (value) {
       params.set(key, value);
     } else {
@@ -40,7 +89,7 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
 
   // Price Slider Commit (Jab user slider chhod de)
   const handlePriceCommit = (value: number[]) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     params.set("minPrice", value[0].toString());
     params.set("maxPrice", value[1].toString());
     params.set("page", "0");
