@@ -37,7 +37,7 @@ export default function Navbar() {
     // Fetch categories from API
     const fetchCategories = async () => {
       try {
-        const response = await api.get('/categories');
+        const response = await api.get('/categories?activeOnly=true');
         console.log('Categories loaded:', response.data);
         setCategories(response.data);
       } catch (error) {

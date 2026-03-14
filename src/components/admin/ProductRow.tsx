@@ -32,6 +32,12 @@ export default function ProductRow({ product }: { product: ProductContent }) {
   const [isActive, setIsActive] = useState(product.isActive);
 
   const handleToggleFeatured = async (checked: boolean) => {
+    // Don't allow featuring if product is not active
+    if (!isActive && checked) {
+      toast.error("Product must be active to be featured");
+      return;
+    }
+    
     setIsFeatured(checked);
     try {
       await api.patch(`/products/${product.id}`, { isFeatured: checked });
@@ -132,11 +138,20 @@ export default function ProductRow({ product }: { product: ProductContent }) {
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-3">
             <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Featured</span>
-            <ToggleSwitch
-              checked={isFeatured}
-              onChange={handleToggleFeatured}
-              onClick={(e) => e.stopPropagation()}
-            />
+            <div className="relative">
+              <ToggleSwitch
+                checked={isFeatured}
+                onChange={handleToggleFeatured}
+                onClick={(e) => e.stopPropagation()}
+                disabled={!isActive}
+              />
+              {!isActive && (
+                <div 
+                  className="absolute inset-0 bg-gray-100/50 rounded-full cursor-not-allowed"
+                  title="Product must be active to be featured"
+                />
+              )}
+            </div>
           </div>
           <div className="flex items-center justify-between gap-3">
             <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Active</span>

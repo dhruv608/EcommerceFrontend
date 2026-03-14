@@ -18,7 +18,7 @@ async function getAllFeaturedProducts() {
   return res.data?.content || [];
 }
 async function getCategories() {
-  const res = await api.get("/categories");
+  const res = await api.get("/categories?activeOnly=true");
   return res.data || [];
 }
 

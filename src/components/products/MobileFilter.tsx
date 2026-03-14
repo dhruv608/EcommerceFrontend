@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Category } from "@/lib/types";
 import { useFilterStore } from "@/store/filterStore";
 
-export default function MobileFilter({ categories }: { categories: Category[] }) {
+export default function MobileFilter({ categories, totalProductCount }: { categories: Category[]; totalProductCount?: number }) {
   const [isOpen, setIsOpen] = React.useState(false);
   
   const {
@@ -68,7 +68,7 @@ export default function MobileFilter({ categories }: { categories: Category[] })
                   onCheckedChange={() => setCategoryId(null)}
                   className="w-4 h-4 accent-[#a3a23d]"
                 />
-                <Label htmlFor="mobile-cat-all" className="text-sm font-medium flex-1 cursor-pointer flex justify-between items-center">
+                <Label htmlFor="mobile-cat-all" className="text-sm font-medium flex-1 cursor-pointer">
                   <span>All Products</span>
                 </Label>
               </div>
@@ -80,9 +80,8 @@ export default function MobileFilter({ categories }: { categories: Category[] })
                     onCheckedChange={() => setCategoryId(cat.id.toString())}
                     className="w-4 h-4 accent-[#a3a23d]"
                   />
-                  <Label htmlFor={`mobile-cat-${cat.id}`} className="text-sm cursor-pointer flex-1 flex justify-between items-center">
+                  <Label htmlFor={`mobile-cat-${cat.id}`} className="text-sm cursor-pointer flex-1">
                     <span>{cat.name}</span>
-                    <span className="text-[13px] text-[#9ca3af]">({cat.productCount})</span>
                   </Label>
                 </div>
               ))}

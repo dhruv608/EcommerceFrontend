@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import api from "@/lib/api";
-import { SingleProduct, ProductForm } from "@/lib/types";
+import { SingleProduct, ProductForm, Category } from "@/lib/types";
+import { getCategories } from "@/lib/getCategories";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ export default function EditProductForm({
   product: SingleProduct;
 }) {
   const router = useRouter();
+  const [categories, setCategories] = useState<Category[]>([]);
 
   /* -------- FORM STATE -------- */
   const [form, setForm] = useState<ProductForm>({
@@ -42,9 +44,42 @@ export default function EditProductForm({
     isActive: product.isActive,
     isFeatured: product.isFeatured,
   });
+
+  // Auto-uncheck featured when product is deactivated
+  const handleActiveChange = (isActive: boolean) => {
+    const newForm = { ...form, isActive };
+    // If deactivating, also uncheck featured
+    if (!isActive) {
+      newForm.isFeatured = false;
+    }
+    setForm(newForm);
+  };
+
+  // Prevent featuring if product is not active
+  const handleFeaturedChange = (isFeatured: boolean) => {
+    if (isFeatured && !form.isActive) {
+      toast.error("Product must be active to be featured");
+      return;
+    }
+    setForm({ ...form, isFeatured });
+  };
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [newImages, setNewImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  /* -------- FETCH CATEGORIES -------- */
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const data = await getCategories();
+        setCategories(data);
+      } catch (err) {
+        toast.error("Failed to load categories");
+      }
+    }
+
+    fetchCategories();
+  }, []);
 
   /* -------- HANDLERS -------- */
 
@@ -312,9 +347,11 @@ export default function EditProductForm({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">Men</SelectItem>
-                <SelectItem value="2">Women</SelectItem>
-                <SelectItem value="3">Kids</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={String(category.id)}>
+                    {category.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -327,21 +364,32 @@ export default function EditProductForm({
               <span className="text-sm font-medium text-gray-700">Active Product</span>
               <ToggleSwitch
                 checked={form.isActive}
-                onChange={(v: boolean) =>
-                  setForm((p) => ({ ...p, isActive: v }))
-                }
+                onChange={handleActiveChange}
               />
             </div>
 
             <div className="flex items-center justify-between py-2">
               <span className="text-sm font-medium text-gray-700">Featured Product</span>
-              <ToggleSwitch
-                checked={form.isFeatured}
-                onChange={(v: boolean) =>
-                  setForm((p) => ({ ...p, isFeatured: v }))
-                }
-              />
+              <div className="relative">
+                <ToggleSwitch
+                  checked={form.isFeatured}
+                  onChange={handleFeaturedChange}
+                  disabled={!form.isActive}
+                />
+                {!form.isActive && (
+                  <div 
+                    className="absolute inset-0 bg-gray-100/50 rounded-full cursor-not-allowed"
+                    title="Product must be active to be featured"
+                  />
+                )}
+              </div>
             </div>
+            
+            {!form.isActive && form.isFeatured && (
+              <div className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg p-2">
+                ⚠️ Inactive products cannot be featured. The featured status will be automatically removed when you save.
+              </div>
+            )}
           </div>
         </div>
       </div>

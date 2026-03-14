@@ -11,9 +11,10 @@ import { useFilterStore } from "@/store/filterStore";
 
 interface FilterSidebarProps {
   categories: Category[];
+  totalProductCount?: number;
 }
 
-export default function FilterSidebar({ categories }: FilterSidebarProps) {
+export default function FilterSidebar({ categories, totalProductCount }: FilterSidebarProps) {
   const {
     categoryId,
     minPrice,
@@ -50,7 +51,7 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
               onCheckedChange={() => setCategoryId(null)}
               className="w-4 h-4 accent-[#a3a23d]"
             />
-            <Label htmlFor="cat-all" className="text-sm font-medium flex-1 cursor-pointer flex justify-between items-center">
+            <Label htmlFor="cat-all" className="text-sm font-medium flex-1 cursor-pointer">
               <span>All Products</span>
             </Label>
           </div>
@@ -62,9 +63,8 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
                 onCheckedChange={() => setCategoryId(cat.id.toString())}
                 className="w-4 h-4 accent-[#a3a23d]"
               />
-              <Label htmlFor={`cat-${cat.id}`} className="text-sm cursor-pointer flex-1 flex justify-between items-center">
+              <Label htmlFor={`cat-${cat.id}`} className="text-sm cursor-pointer flex-1">
                 <span>{cat.name}</span>
-                <span className="text-[13px] text-[#9ca3af]">({cat.productCount})</span>
               </Label>
             </div>
           ))}

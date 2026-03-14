@@ -10,6 +10,7 @@ interface FilterState {
   direction: string;
   search: string | null;
   page: number;
+  _isInitializing: boolean;
 }
 
 interface FilterActions {
@@ -21,6 +22,7 @@ interface FilterActions {
   clearAllFilters: () => void;
   updateFromURL: () => void;
   syncWithURL: () => void;
+  _initializeFromURL: () => void; // Private method for initialization
 }
 
 type FilterStore = FilterState & FilterActions;
@@ -33,6 +35,7 @@ const DEFAULT_FILTERS: FilterState = {
   direction: 'desc',
   search: null,
   page: 0,
+  _isInitializing: false,
 };
 
 export const useFilterStore = create<FilterStore>((set, get) => ({
@@ -95,13 +98,58 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     const page = params.get('page');
     if (page) state.page = Number(page);
 
+    // Update state without triggering URL sync
     set(state);
+  },
+
+  _initializeFromURL: () => {
+    if (typeof window === 'undefined') return;
+    
+    const params = new URLSearchParams(window.location.search);
+    const state: Partial<FilterState> = {};
+
+    const categoryId = params.get('categoryId');
+    if (categoryId) state.categoryId = categoryId;
+
+    const minPrice = params.get('minPrice');
+    if (minPrice) state.minPrice = Number(minPrice);
+
+    const maxPrice = params.get('maxPrice');
+    if (maxPrice) state.maxPrice = Number(maxPrice);
+
+    const sortBy = params.get('sortBy');
+    if (sortBy) state.sortBy = sortBy;
+
+    const direction = params.get('direction');
+    if (direction) state.direction = direction;
+
+    const search = params.get('search');
+    if (search) state.search = search;
+
+    const page = params.get('page');
+    if (page) state.page = Number(page);
+
+    console.log("Store _initializeFromURL - URL params:", Object.fromEntries(params.entries()));
+    console.log("Store _initializeFromURL - Setting state:", state);
+    console.log("Store _initializeFromURL - Current URL:", window.location.search);
+
+    // Set initialization flag and update state without triggering URL sync
+    set({ ...state, _isInitializing: true });
+    
+    // Clear initialization flag after a short delay
+    setTimeout(() => {
+      set({ _isInitializing: false });
+    }, 200);
   },
 
   syncWithURL: () => {
     if (typeof window === 'undefined') return;
     
     const state = get();
+    
+    // Don't sync URL during initialization
+    if (state._isInitializing) return;
+    
     const params = new URLSearchParams();
 
     if (state.categoryId) params.set('categoryId', state.categoryId);
@@ -122,19 +170,26 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
 
 // Hook to initialize store from URL on client side
 export const useInitializeFilters = () => {
-  const updateFromURL = useFilterStore((state) => state.updateFromURL);
+  const initializeFromURL = useFilterStore((state) => state._initializeFromURL);
 
   React.useEffect(() => {
-    updateFromURL();
-  }, [updateFromURL]);
+    // Initialize immediately and also after a small delay to ensure URL is fully loaded
+    initializeFromURL();
+    
+    const timer = setTimeout(() => {
+      initializeFromURL();
+    }, 50);
+    
+    return () => clearTimeout(timer);
+  }, [initializeFromURL]);
 
   // Listen for popstate events (browser back/forward)
   React.useEffect(() => {
     const handlePopState = () => {
-      updateFromURL();
+      initializeFromURL();
     };
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [updateFromURL]);
+  }, [initializeFromURL]);
 };

@@ -38,6 +38,25 @@ export default function AddProductPage() {
   const [images, setImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Auto-uncheck featured when product is deactivated
+  const handleActiveChange = (isActive: boolean) => {
+    const newProduct = { ...product, isActive };
+    // If deactivating, also uncheck featured
+    if (!isActive) {
+      newProduct.isFeatured = false;
+    }
+    setProduct(newProduct);
+  };
+
+  // Prevent featuring if product is not active
+  const handleFeaturedChange = (isFeatured: boolean) => {
+    if (isFeatured && !product.isActive) {
+      toast.error("Product must be active to be featured");
+      return;
+    }
+    setProduct({ ...product, isFeatured });
+  };
+
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -218,21 +237,32 @@ export default function AddProductPage() {
               <span>Active</span>
               <ToggleSwitch
                 checked={product.isActive}
-                onChange={(val) =>
-                  setProduct(prev => ({ ...prev, isActive: val }))
-                }
+                onChange={handleActiveChange}
               />
             </div>
 
             <div className="flex items-center justify-between py-2">
               <span>Featured</span>
-              <ToggleSwitch
-                checked={product.isFeatured}
-                onChange={(val) =>
-                  setProduct(prev => ({ ...prev, isFeatured: val }))
-                }
-              />
+              <div className="relative">
+                <ToggleSwitch
+                  checked={product.isFeatured}
+                  onChange={handleFeaturedChange}
+                  disabled={!product.isActive}
+                />
+                {!product.isActive && (
+                  <div 
+                    className="absolute inset-0 bg-gray-100/50 rounded-full cursor-not-allowed"
+                    title="Product must be active to be featured"
+                  />
+                )}
+              </div>
             </div>
+            
+            {!product.isActive && product.isFeatured && (
+              <div className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg p-2">
+                ⚠️ Inactive products cannot be featured. The featured status will be automatically removed when you save.
+              </div>
+            )}
           </div>
 
           {/* Organization */}
@@ -240,7 +270,7 @@ export default function AddProductPage() {
             <h2 className="font-medium">Category / Stock</h2>
 
             <div className="space-y-4">
-              <div className="relative">
+              <div>
                 <Select
                   onValueChange={(val) =>
                     setProduct(prev => ({ ...prev, categoryId: val }))
@@ -249,7 +279,7 @@ export default function AddProductPage() {
                   <SelectTrigger className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
-                  <SelectContent className="absolute z-50 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 w-full">
+                  <SelectContent>
                     {categories.map((category) => (
                       <SelectItem
                         key={category.id}

@@ -33,8 +33,8 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    if (!product.isActive) {
+
+    if (product.stock === 0) {
       toast.error("This product is out of stock");
       return;
     }
@@ -115,7 +115,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
                 FEATURED
               </Badge>
             )}
-            {!product.isActive && (
+            {product.isActive && product.stock === 0 && (
               <Badge className="badge-danger px-2 py-1 text-xs font-medium rounded-full">
                 Out of Stock
               </Badge>
@@ -175,7 +175,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
               // Add to Cart Button
               <Button 
                 onClick={handleAddToCart}
-                disabled={!product.isActive || addingToCart || loading}
+                disabled={product.stock === 0 || addingToCart || loading}
                 className="btn-primary w-full h-12 rounded-xl font-bold text-sm shadow-premium-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {addingToCart ? (
@@ -202,7 +202,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
               {product.category?.name || "Collection"}
             </Badge>
             
-            {product.isActive ? (
+            {product.stock > 0 ? (
               <Badge className="bg-green-100 text-green-700 px-2 py-1 text-xs font-medium rounded-full">
                 In Stock
               </Badge>
@@ -286,7 +286,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
               // Mobile Add to Cart Button
               <Button 
                 onClick={handleAddToCart}
-                disabled={!product.isActive || addingToCart || loading}
+                disabled={product.stock === 0 || addingToCart || loading}
                 className="bg-[#acac49] hover:bg-[#96963f] text-white rounded-lg w-full py-2.5 text-sm font-medium flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {addingToCart ? (

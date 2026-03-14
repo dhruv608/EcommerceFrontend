@@ -148,18 +148,17 @@ export default function ProductsClient({
             
             {/* Filters */}
             <div className="flex gap-2.5">
-              <div className="relative w-44">
+              <div className="w-44">
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger className="w-full bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
-                  <SelectContent className="absolute left-0 top-full mt-1 z-50 bg-white border border-gray-200 rounded-lg shadow-lg w-full">
+                  <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
                     {categories.map((category) => (
                       <SelectItem
                         key={category.id}
                         value={String(category.id)}
-                        className="hover:bg-gray-100 cursor-pointer"
                       >
                         {category.name}
                       </SelectItem>
@@ -168,28 +167,28 @@ export default function ProductsClient({
                 </Select>
               </div>
 
-              <div className="relative w-36">
+              <div className="w-36">
                 <Select value={status} onValueChange={setStatus}>
                   <SelectTrigger className="w-full bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
                     <SelectValue placeholder="All Status" />
                   </SelectTrigger>
-                  <SelectContent className="absolute left-0 top-full mt-1 z-50 bg-white border border-gray-200 rounded-lg shadow-lg w-full">
-                    <SelectItem value="all" className="hover:bg-gray-100 cursor-pointer">All</SelectItem>
-                    <SelectItem value="active" className="hover:bg-gray-100 cursor-pointer">Active</SelectItem>
-                    <SelectItem value="inactive" className="hover:bg-gray-100 cursor-pointer">Inactive</SelectItem>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="relative w-36">
+              <div className="w-36">
                 <Select value={feature} onValueChange={setFeature}>
                   <SelectTrigger className="w-full bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
                     <SelectValue placeholder="All Featured" />
                   </SelectTrigger>
-                  <SelectContent className="absolute left-0 top-full mt-1 z-50 bg-white border border-gray-200 rounded-lg shadow-lg w-full">
-                    <SelectItem value="all" className="hover:bg-gray-100 cursor-pointer">All</SelectItem>
-                    <SelectItem value="feature" className="hover:bg-gray-100 cursor-pointer">Featured</SelectItem>
-                    <SelectItem value="unfeature" className="hover:bg-gray-100 cursor-pointer">UnFeatured</SelectItem>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="feature">Featured</SelectItem>
+                    <SelectItem value="unfeature">UnFeatured</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

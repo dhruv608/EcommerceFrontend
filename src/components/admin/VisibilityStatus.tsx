@@ -17,6 +17,25 @@ export default function VisibilityStatus({ product }: VisibilityStatusProps) {
   async function toggleActive(val: boolean) {
     setIsActive(val); // optimistic update
 
+    // If deactivating, also uncheck featured
+    if (!val && isFeatured) {
+      setIsFeatured(false);
+      
+      try {
+        // Update both isActive and isFeatured in one call
+        await api.patch(`/products/${product.id}`, {
+          isActive: val,
+          isFeatured: false,
+        });
+        toast.success("Product deactivated and removed from featured");
+      } catch {
+        setIsActive(!val); // rollback active
+        setIsFeatured(true); // rollback featured
+        toast.error("Failed to update status");
+      }
+      return;
+    }
+
     try {
       await api.patch(`/products/${product.id}`, {
         isActive: val,
@@ -29,6 +48,12 @@ export default function VisibilityStatus({ product }: VisibilityStatusProps) {
   }
 
   async function toggleFeatured(val: boolean) {
+    // Don't allow featuring if product is not active
+    if (!isActive && val) {
+      toast.error("Product must be active to be featured");
+      return;
+    }
+
     setIsFeatured(val);
 
     try {
@@ -58,11 +83,27 @@ export default function VisibilityStatus({ product }: VisibilityStatusProps) {
       {/* Featured */}
       <div className="flex items-center justify-between py-2">
         <span className="text-sm font-medium text-gray-700">Featured Product</span>
-        <ToggleSwitch
-          checked={isFeatured}
-          onChange={toggleFeatured}
-        />
+        <div className="relative">
+          <ToggleSwitch
+            checked={isFeatured}
+            onChange={toggleFeatured}
+            disabled={!isActive}
+          />
+          {!isActive && (
+            <div 
+              className="absolute inset-0 bg-gray-100/50 rounded-full cursor-not-allowed"
+              title="Product must be active to be featured"
+            />
+          )}
+        </div>
       </div>
+
+      {/* Warning Message */}
+      {!isActive && isFeatured && (
+        <div className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg p-2">
+          ⚠️ Inactive products cannot be featured. The featured status will be automatically removed when deactivated.
+        </div>
+      )}
 
       {/* Badges */}
       <div className="flex gap-2">
@@ -71,9 +112,14 @@ export default function VisibilityStatus({ product }: VisibilityStatusProps) {
             Published
           </span>
         )}
-        {isFeatured && (
+        {isActive && isFeatured && (
           <span className="px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded">
             Featured
+          </span>
+        )}
+        {!isActive && isFeatured && (
+          <span className="px-3 py-1 text-xs bg-amber-100 text-amber-700 rounded">
+            Featured (Inactive)
           </span>
         )}
       </div>
