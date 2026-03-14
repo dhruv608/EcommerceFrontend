@@ -1,110 +1,37 @@
 "use client";
 
 import * as React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Category } from "@/lib/types";
+import { useFilterStore } from "@/store/filterStore";
 
 interface FilterSidebarProps {
   categories: Category[];
 }
 
 export default function FilterSidebar({ categories }: FilterSidebarProps) {
-  const router = useRouter();
-  
-  // Manual URL parsing since useSearchParams doesn't work in production
-  const getManualParams = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const params: Record<string, string | string[] | undefined> = {};
-    for (const [key, value] of urlParams.entries()) {
-      params[key] = value;
-    }
-    return params;
-  };
+  const {
+    categoryId,
+    minPrice,
+    maxPrice,
+    setCategoryId,
+    setPriceRange,
+    clearAllFilters
+  } = useFilterStore();
 
-  const searchParams = getManualParams();
+  // Local state for slider drag interaction
+  const [localMinPrice, setLocalMinPrice] = React.useState(minPrice);
+  const [localMaxPrice, setLocalMaxPrice] = React.useState(maxPrice);
 
-  // 1. Initial State from URL
-  const selectedCategoryId = searchParams.get("categoryId");
-  const minPriceParam = Number(searchParams.get("minPrice")) || 0;
-  const maxPriceParam = Number(searchParams.get("maxPrice")) || 5000;
-
-  // Local State for Slider (taaki drag karte waqt URL na badle, chhodne pe badle)
-  const [minPrice, setMinPrice] = React.useState(minPriceParam);
-  const [maxPrice, setMaxPrice] = React.useState(maxPriceParam);
-
-  // Listen for URL changes to update filters automatically
+  // Sync local slider state with global store
   React.useEffect(() => {
-    const handleUrlChange = () => {
-      const newParams = getManualParams();
-      const newCategoryId = newParams.get("categoryId");
-      const newMinPrice = Number(newParams.get("minPrice")) || 0;
-      const newMaxPrice = Number(newParams.get("maxPrice")) || 5000;
-      
-      // Update local state if URL parameters changed
-      if (newCategoryId !== undefined && newCategoryId !== selectedCategoryId) {
-        // Note: We don't update categoryId here as it's handled by URL change
-      }
-      
-      if (newMinPrice !== minPrice) {
-        setMinPrice(newMinPrice);
-      }
-      
-      if (newMaxPrice !== maxPrice) {
-        setMaxPrice(newMaxPrice);
-      }
-    };
-
-    // Listen for popstate events (browser back/forward)
-    window.addEventListener('popstate', handleUrlChange);
-    
-    // Listen for hashchange events
-    window.addEventListener('hashchange', handleUrlChange);
-    
-    // Custom event for URL changes
-    window.addEventListener('urlchange', handleUrlChange);
-    
-    return () => {
-      window.removeEventListener('popstate', handleUrlChange);
-      window.removeEventListener('hashchange', handleUrlChange);
-      window.removeEventListener('urlchange', handleUrlChange);
-    };
-  }, []); // Remove dependencies to prevent re-render loops
-
-  // 2. Filter Update Logic
-  const updateFilter = (key: string, value: string | null) => {
-    const params = new URLSearchParams(window.location.search);
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
-    params.set("page", "0"); // Filter change hone pe page 1 pe jao
-    router.push(`/products?${params.toString()}`);
-  };
-
-  // Price Slider Commit (Jab user slider chhod de)
-  const handlePriceCommit = (value: number[]) => {
-    const params = new URLSearchParams(window.location.search);
-    params.set("minPrice", value[0].toString());
-    params.set("maxPrice", value[1].toString());
-    params.set("page", "0");
-    router.push(`/products?${params.toString()}`);
-  };
-
-  // Clear All Filters
-  const clearAllFilters = () => {
-    // Reset local state
-    setMinPrice(0);
-    setMaxPrice(5000);
-    
-    // Navigate to clean URL to reset all filters
-    router.push("/products");
-  };
+    setLocalMinPrice(minPrice);
+    setLocalMaxPrice(maxPrice);
+  }, [minPrice, maxPrice]);
 
   return (
     <div className="bg-white rounded-[14px] p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] w-full max-w-full hidden md:block">
@@ -119,8 +46,8 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
           <div className="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
             <Checkbox 
               id="cat-all" 
-              checked={!selectedCategoryId}
-              onCheckedChange={() => updateFilter("categoryId", null)}
+              checked={!categoryId}
+              onCheckedChange={() => setCategoryId(null)}
               className="w-4 h-4 accent-[#a3a23d]"
             />
             <Label htmlFor="cat-all" className="text-sm font-medium flex-1 cursor-pointer flex justify-between items-center">
@@ -131,8 +58,8 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
             <div key={cat.id} className="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
               <Checkbox 
                 id={`cat-${cat.id}`} 
-                checked={selectedCategoryId === cat.id.toString()}
-                onCheckedChange={() => updateFilter("categoryId", cat.id.toString())}
+                checked={categoryId === cat.id.toString()}
+                onCheckedChange={() => setCategoryId(cat.id.toString())}
                 className="w-4 h-4 accent-[#a3a23d]"
               />
               <Label htmlFor={`cat-${cat.id}`} className="text-sm cursor-pointer flex-1 flex justify-between items-center">
@@ -157,8 +84,8 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
             <div 
               className="slider-range absolute top-1/2 h-1 bg-[#acac49] rounded-[4px] transform -translate-y-1/2"
               style={{
-                left: `${(minPrice / 5000) * 100}%`,
-                width: `${((maxPrice - minPrice) / 5000) * 100}%`
+                left: `${(localMinPrice / 5000) * 100}%`,
+                width: `${((localMaxPrice - localMinPrice) / 5000) * 100}%`
               }}
             ></div>
             
@@ -167,16 +94,17 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
               type="range"
               min="0"
               max="5000"
-              value={minPrice}
+              value={localMinPrice}
               onChange={(e) => {
                 let newMin = Number(e.target.value);
                 // Prevent sliders from crossing
-                if (newMin > maxPrice - 50) {
-                  newMin = maxPrice - 50;
+                if (newMin > localMaxPrice - 50) {
+                  newMin = localMaxPrice - 50;
                 }
-                setMinPrice(newMin);
-                updateFilter("minPrice", newMin.toString());
+                setLocalMinPrice(newMin);
               }}
+              onMouseUp={() => setPriceRange(localMinPrice, localMaxPrice)}
+              onTouchEnd={() => setPriceRange(localMinPrice, localMaxPrice)}
               className="min-slider absolute top-1/2 left-0 w-full h-1 bg-transparent appearance-none transform -translate-y-1/2 pointer-events-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#acac49] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-3 [&::-webkit-slider-thumb]:-mt-1.5 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-lg"
             />
             
@@ -185,16 +113,17 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
               type="range"
               min="0"
               max="5000"
-              value={maxPrice}
+              value={localMaxPrice}
               onChange={(e) => {
                 let newMax = Number(e.target.value);
                 // Prevent sliders from crossing
-                if (newMax < minPrice + 50) {
-                  newMax = minPrice + 50;
+                if (newMax < localMinPrice + 50) {
+                  newMax = localMinPrice + 50;
                 }
-                setMaxPrice(newMax);
-                updateFilter("maxPrice", newMax.toString());
+                setLocalMaxPrice(newMax);
               }}
+              onMouseUp={() => setPriceRange(localMinPrice, localMaxPrice)}
+              onTouchEnd={() => setPriceRange(localMinPrice, localMaxPrice)}
               className="max-slider absolute top-1/2 left-0 w-full h-1 bg-transparent appearance-none transform -translate-y-1/2 pointer-events-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#acac49] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:relative [&::-webkit-slider-thumb]:z-4 [&::-webkit-slider-thumb]:-mt-1.5 [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-lg"
             />
           </div>
@@ -204,16 +133,16 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
             <div className="flex-1">
               <input
                 type="number"
-                value={minPrice}
+                value={localMinPrice}
                 onChange={(e) => {
                   let newMin = parseInt(e.target.value) || 0;
                   // Prevent sliders from crossing
-                  if (newMin > maxPrice - 50) {
-                    newMin = maxPrice - 50;
+                  if (newMin > localMaxPrice - 50) {
+                    newMin = localMaxPrice - 50;
                   }
-                  setMinPrice(newMin);
-                  updateFilter("minPrice", newMin.toString());
+                  setLocalMinPrice(newMin);
                 }}
+                onBlur={() => setPriceRange(localMinPrice, localMaxPrice)}
                 className="w-full rounded-lg px-2 py-2 border border-[#e5e7eb] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#acac49] focus:border-transparent"
                 placeholder="Min"
               />
@@ -222,16 +151,16 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
             <div className="flex-1">
               <input
                 type="number"
-                value={maxPrice}
+                value={localMaxPrice}
                 onChange={(e) => {
                   let newMax = parseInt(e.target.value) || 0;
                   // Prevent sliders from crossing
-                  if (newMax < minPrice + 50) {
-                    newMax = minPrice + 50;
+                  if (newMax < localMinPrice + 50) {
+                    newMax = localMinPrice + 50;
                   }
-                  setMaxPrice(newMax);
-                  updateFilter("maxPrice", newMax.toString());
+                  setLocalMaxPrice(newMax);
                 }}
+                onBlur={() => setPriceRange(localMinPrice, localMaxPrice)}
                 className="w-full rounded-lg px-2 py-2 border border-[#e5e7eb] text-[14px] focus:outline-none focus:ring-2 focus:ring-[#acac49] focus:border-transparent"
                 placeholder="Max"
               />
@@ -240,7 +169,7 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
         </div>
 
       {/* Clear Filters Button */}
-      {(selectedCategoryId || minPriceParam > 0) && (
+      {(categoryId || minPrice > 0) && (
         <div className="mt-6 pt-4 border-t border-[#e5e7eb]">
           <Button 
             variant="outline"

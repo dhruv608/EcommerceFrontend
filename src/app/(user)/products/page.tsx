@@ -13,13 +13,14 @@ import Link from "next/link";
 import ProductPagination from "@/components/products/ProductPagination";
 import EmptyProductsState from "@/components/ui/EmptyProductsState";
 import { useRouter } from "next/navigation";
+import { useFilterStore, useInitializeFilters } from "@/store/filterStore";
 
 // --- API FETCH FUNCTIONS ---
 
 async function getProducts(
   params: Record<string, string | string[] | undefined>
 ): Promise<Product> {
-  console.log("getProducts called with params:", params); // Debug log
+  console.log("getProducts called with params:", params);
   const query = new URLSearchParams();
 
   if (typeof params.categoryId === "string")
@@ -27,6 +28,9 @@ async function getProducts(
 
   if (typeof params.search === "string")
     query.append("search", params.search);
+
+  if (typeof params.minPrice === "string")
+    query.append("minPrice", params.minPrice);
 
   if (typeof params.maxPrice === "string")
     query.append("maxPrice", params.maxPrice);
@@ -41,7 +45,7 @@ async function getProducts(
   query.append("size", "12");
   query.append("isActive", "true");
 
-  console.log("Final API query:", query.toString()); // Debug log
+  console.log("Final API query:", query.toString());
 
   try {
     const { data } = await api.get(`/products?${query.toString()}`);
@@ -80,66 +84,50 @@ export default function ProductsPage({
   const router = useRouter();
   const [productData, setProductData] = useState<Product | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [resolvedSearchParams, setResolvedSearchParams] = useState<Record<string, string | string[] | undefined>>({});
+  
+  // Initialize filter store from URL
+  useInitializeFilters();
+  
+  // Get filter state
+  const filterState = useFilterStore();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // Always use manual URL parsing since searchParams Promise doesn't work in production
-      const urlParams = new URLSearchParams(window.location.search);
-      const manualParams: Record<string, string | string[] | undefined> = {};
-      urlParams.forEach((value, key) => {
-        manualParams[key] = value;
-      });
-      console.log("Using manual URL params:", manualParams);
-      setResolvedSearchParams(manualParams);
-      
-      const [productResponse, categoriesResponse] = await Promise.all([
-        getProducts(manualParams),
-        getCategories(),
-      ]);
-
-      setProductData(productResponse);
-      setCategories(categoriesResponse);
-    };
-
-    fetchData();
-  }, []); // Remove searchParams dependency since we're not using it
-
-  // Listen for URL changes to refetch data
-  useEffect(() => {
-    const handleRouteChange = () => {
-      const fetchData = async () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const manualParams: Record<string, string | string[] | undefined> = {};
-        urlParams.forEach((value, key) => {
-          manualParams[key] = value;
-        });
-        console.log("Route changed, using manual URL params:", manualParams);
-        setResolvedSearchParams(manualParams);
-        
-        const [productResponse, categoriesResponse] = await Promise.all([
-          getProducts(manualParams),
-          getCategories(),
-        ]);
-
-        setProductData(productResponse);
-        setCategories(categoriesResponse);
-      };
-
-      fetchData();
-    };
-
-    // Listen for popstate events (browser back/forward)
-    window.addEventListener('popstate', handleRouteChange);
+  // Convert filter state to API params
+  const getApiParams = () => {
+    const params: Record<string, string | string[] | undefined> = {};
     
-    return () => {
-      window.removeEventListener('popstate', handleRouteChange);
-    };
-  }, []); // Remove searchParams dependency
+    if (filterState.categoryId) params.categoryId = filterState.categoryId;
+    if (filterState.search) params.search = filterState.search;
+    if (filterState.minPrice > 0) params.minPrice = filterState.minPrice.toString();
+    if (filterState.maxPrice < 5000) params.maxPrice = filterState.maxPrice.toString();
+    if (filterState.sortBy !== 'createdAt') params.sortBy = filterState.sortBy;
+    if (filterState.direction !== 'desc') params.direction = filterState.direction;
+    if (filterState.page > 0) params.page = filterState.page.toString();
+    
+    return params;
+  };
+
+  // Fetch data function
+  const fetchData = async () => {
+    const params = getApiParams();
+    console.log("Fetching products with params:", params);
+    
+    const [productResponse, categoriesResponse] = await Promise.all([
+      getProducts(params),
+      getCategories(),
+    ]);
+
+    setProductData(productResponse);
+    setCategories(categoriesResponse);
+  };
+
+  // Initial data fetch
+  useEffect(() => {
+    fetchData();
+  }, [filterState.categoryId, filterState.search, filterState.minPrice, filterState.maxPrice, filterState.sortBy, filterState.direction, filterState.page]);
 
   const currentCategoryName =
     categories.find(
-      (c) => c.id.toString() === ((resolvedSearchParams.categoryId as string) || "")
+      (c) => c.id.toString() === (filterState.categoryId || "")
     )?.name || "All Collection";
 
   if (!productData || !categories) {
@@ -204,7 +192,7 @@ export default function ProductsPage({
             </>
           ) : (
             // Empty state with DotLottie animation
-            <EmptyProductsState clearFilters={() => router.push("/products")} />
+            <EmptyProductsState clearFilters={() => filterState.clearAllFilters()} />
           )}
         </div>
       </main>
