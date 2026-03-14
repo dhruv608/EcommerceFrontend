@@ -71,6 +71,7 @@ export default function ProductsClient({
     if (filterState.sortBy !== 'createdAt') params.sortBy = filterState.sortBy;
     if (filterState.direction !== 'desc') params.direction = filterState.direction;
     if (filterState.page > 0) params.page = filterState.page.toString();
+    if (filterState.isFeatured) params.isFeatured = "true";
     
     // Always filter for active products
     params.isActive = "true";
@@ -104,7 +105,7 @@ export default function ProductsClient({
     if (isInitialized) {
       fetchData();
     }
-  }, [isInitialized, filterState.categoryId, filterState.search, filterState.minPrice, filterState.maxPrice, filterState.sortBy, filterState.direction, filterState.page]);
+  }, [isInitialized, filterState.categoryId, filterState.search, filterState.minPrice, filterState.maxPrice, filterState.sortBy, filterState.direction, filterState.page, filterState.isFeatured]);
 
   return (
     <>

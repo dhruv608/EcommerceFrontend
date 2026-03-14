@@ -10,6 +10,7 @@ interface FilterState {
   direction: string;
   search: string | null;
   page: number;
+  isFeatured: boolean;
   _isInitializing: boolean;
 }
 
@@ -19,6 +20,7 @@ interface FilterActions {
   setSort: (sortBy: string, direction: string) => void;
   setSearch: (search: string | null) => void;
   setPage: (page: number) => void;
+  setFeatured: (isFeatured: boolean) => void;
   clearAllFilters: () => void;
   updateFromURL: () => void;
   syncWithURL: () => void;
@@ -35,6 +37,7 @@ const DEFAULT_FILTERS: FilterState = {
   direction: 'desc',
   search: null,
   page: 0,
+  isFeatured: false,
   _isInitializing: false,
 };
 
@@ -63,6 +66,11 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
 
   setPage: (page) => {
     set({ page });
+    get().syncWithURL();
+  },
+
+  setFeatured: (isFeatured) => {
+    set({ isFeatured, page: 0 });
     get().syncWithURL();
   },
 
@@ -129,6 +137,9 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     const page = params.get('page');
     if (page) state.page = Number(page);
 
+    const isFeatured = params.get('isFeatured');
+    if (isFeatured) state.isFeatured = isFeatured === 'true';
+
     console.log("Store _initializeFromURL - URL params:", Object.fromEntries(params.entries()));
     console.log("Store _initializeFromURL - Setting state:", state);
     console.log("Store _initializeFromURL - Current URL:", window.location.search);
@@ -159,6 +170,7 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     if (state.direction !== DEFAULT_FILTERS.direction) params.set('direction', state.direction);
     if (state.search) params.set('search', state.search);
     if (state.page !== DEFAULT_FILTERS.page) params.set('page', state.page.toString());
+    if (state.isFeatured !== DEFAULT_FILTERS.isFeatured) params.set('isFeatured', state.isFeatured.toString());
 
     const newUrl = params.toString() ? `/products?${params.toString()}` : '/products';
     

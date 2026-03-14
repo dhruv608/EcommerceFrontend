@@ -17,8 +17,10 @@ export default function MobileFilter({ categories, totalProductCount }: { catego
     categoryId,
     minPrice,
     maxPrice,
+    isFeatured,
     setCategoryId,
     setPriceRange,
+    setFeatured,
     clearAllFilters
   } = useFilterStore();
 
@@ -85,6 +87,26 @@ export default function MobileFilter({ categories, totalProductCount }: { catego
                   </Label>
                 </div>
               ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Featured Products */}
+          <div>
+            <h3 className="text-base font-semibold text-gray-900 mb-3">Special</h3>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
+                <Checkbox 
+                  id="mobile-featured" 
+                  checked={isFeatured}
+                  onCheckedChange={(checked) => setFeatured(checked as boolean)}
+                  className="w-4 h-4 accent-[#a3a23d]"
+                />
+                <Label htmlFor="mobile-featured" className="text-sm cursor-pointer flex-1">
+                  <span>Featured Products</span>
+                </Label>
+              </div>
             </div>
           </div>
 
@@ -184,7 +206,7 @@ export default function MobileFilter({ categories, totalProductCount }: { catego
           </div>
 
           {/* Clear Filters Button */}
-          {(categoryId || minPrice > 0) && (
+          {(categoryId || minPrice > 0 || isFeatured) && (
             <div className="pt-4 border-t border-[#e5e7eb]">
               <Button 
                 variant="outline"

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Package, 
   User, 
@@ -252,38 +253,64 @@ export default function AdminOrdersPage() {
               
               {/* Filters */}
               <div className="flex gap-3">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150"
-                >
-                  <option value="ALL">All Status</option>
-                  {Object.entries(ORDER_STATUS).map(([key, value]) => (
-                    <option key={key} value={key}>{value.label}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-[140px] border-gray-300 bg-white hover:border-gray-400 focus:border-[#acac49] focus:ring-[#acac49]/20">
+                      <SelectValue placeholder="All Status" />
+                    </SelectTrigger>
+                    <SelectContent 
+                      className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 min-w-[140px]"
+                      position="popper"
+                      side="bottom"
+                      align="start"
+                    >
+                      <SelectItem value="ALL" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">All Status</SelectItem>
+                      {Object.entries(ORDER_STATUS).map(([key, value]) => (
+                        <SelectItem key={key} value={key} className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">
+                          {value.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 
-                <select
-                  value={dateFilter}
-                  onChange={(e) => setDateFilter(e.target.value)}
-                  className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150"
-                >
-                  <option value="all">All Time</option>
-                  <option value="today">Today</option>
-                  <option value="week">This Week</option>
-                  <option value="month">This Month</option>
-                </select>
+                <div className="relative">
+                  <Select value={dateFilter} onValueChange={setDateFilter}>
+                    <SelectTrigger className="w-[120px] border-gray-300 bg-white hover:border-gray-400 focus:border-[#acac49] focus:ring-[#acac49]/20">
+                      <SelectValue placeholder="All Time" />
+                    </SelectTrigger>
+                    <SelectContent 
+                      className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 min-w-[120px]"
+                      position="popper"
+                      side="bottom"
+                      align="start"
+                    >
+                      <SelectItem value="all" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">All Time</SelectItem>
+                      <SelectItem value="today" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">Today</SelectItem>
+                      <SelectItem value="week" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">This Week</SelectItem>
+                      <SelectItem value="month" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">This Month</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150"
-                >
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="price-low">Price: Low to High</option>
-                </select>
+                <div className="relative">
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-[140px] border-gray-300 bg-white hover:border-gray-400 focus:border-[#acac49] focus:ring-[#acac49]/20">
+                      <SelectValue placeholder="Sort By" />
+                    </SelectTrigger>
+                    <SelectContent 
+                      className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 min-w-[140px]"
+                      position="popper"
+                      side="bottom"
+                      align="start"
+                    >
+                      <SelectItem value="newest" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">Newest First</SelectItem>
+                      <SelectItem value="oldest" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">Oldest First</SelectItem>
+                      <SelectItem value="price-high" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">Price: High to Low</SelectItem>
+                      <SelectItem value="price-low" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">Price: Low to High</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </CardContent>

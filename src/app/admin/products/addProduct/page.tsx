@@ -120,7 +120,7 @@ export default function AddProductPage() {
   }
 
   return (
-    <div className="px-8 py-6 space-y-6">
+    <div className="px-8 py-6 space-y-6 overflow-visible">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Add New Product</h1>
@@ -137,10 +137,10 @@ export default function AddProductPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-3 gap-6 overflow-visible">
 
-        {/* LEFT SIDE */}
-        <div className="col-span-2 space-y-6">
+        {/* RIGHT SIDE */}
+        <div className="col-span-1 space-y-6 overflow-visible relative z-40">
           {/* General Info */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
             <h2 className="font-medium">General Information</h2>
@@ -266,39 +266,50 @@ export default function AddProductPage() {
           </div>
 
           {/* Organization */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
-            <h2 className="font-medium">Category / Stock</h2>
+          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-6 overflow-visible">
+            <h2 className="font-medium">Category</h2>
 
-            <div className="space-y-4">
-              <div>
-                <Select
-                  onValueChange={(val) =>
-                    setProduct(prev => ({ ...prev, categoryId: val }))
-                  }
+            <div className="relative">
+              <Select
+                onValueChange={(val) =>
+                  setProduct(prev => ({ ...prev, categoryId: val }))
+                }
+              >
+                <SelectTrigger className="w-full border-gray-300 bg-white hover:border-gray-400 focus:border-[#acac49] focus:ring-[#acac49]/20">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent 
+                  className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50"
+                  position="popper"
+                  side="bottom"
+                  align="start"
                 >
-                  <SelectTrigger className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]">
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem
-                        key={category.id}
-                        value={String(category.id)}
-                      >
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                  {categories.map((category) => (
+                    <SelectItem
+                      key={category.id}
+                      value={String(category.id)}
+                      className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1"
+                    >
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
 
+          {/* Stock */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
+            <h2 className="font-medium">Stock</h2>
+            
+            <div className="relative">
               <Input 
                 type="number" 
                 placeholder="Stock" 
                 value={product.stock} 
                 name="stock" 
                 onChange={handleChange} 
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]" 
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49] hover:border-gray-400 transition-colors" 
               />
             </div>
           </div>

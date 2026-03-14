@@ -148,17 +148,23 @@ export default function ProductsClient({
             
             {/* Filters */}
             <div className="flex gap-2.5">
-              <div className="w-44">
+              <div className="w-44 relative">
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="w-full bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
+                  <SelectTrigger className="w-full border-gray-300 bg-white hover:border-gray-400 focus:border-[#acac49] focus:ring-[#acac49]/20">
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
+                  <SelectContent 
+                    className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 min-w-[176px]"
+                    position="popper"
+                    side="bottom"
+                    align="start"
+                  >
+                    <SelectItem value="all" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">All Categories</SelectItem>
                     {categories.map((category) => (
                       <SelectItem
                         key={category.id}
                         value={String(category.id)}
+                        className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1"
                       >
                         {category.name}
                       </SelectItem>
@@ -167,28 +173,38 @@ export default function ProductsClient({
                 </Select>
               </div>
 
-              <div className="w-36">
+              <div className="w-36 relative">
                 <Select value={status} onValueChange={setStatus}>
-                  <SelectTrigger className="w-full bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
+                  <SelectTrigger className="w-full border-gray-300 bg-white hover:border-gray-400 focus:border-[#acac49] focus:ring-[#acac49]/20">
                     <SelectValue placeholder="All Status" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectContent 
+                    className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 min-w-[144px]"
+                    position="popper"
+                    side="bottom"
+                    align="start"
+                  >
+                    <SelectItem value="all" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">All</SelectItem>
+                    <SelectItem value="active" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">Active</SelectItem>
+                    <SelectItem value="inactive" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="w-36">
+              <div className="w-36 relative">
                 <Select value={feature} onValueChange={setFeature}>
-                  <SelectTrigger className="w-full bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#acac49]/20 focus:border-[#acac49] transition-all duration-150">
+                  <SelectTrigger className="w-full border-gray-300 bg-white hover:border-gray-400 focus:border-[#acac49] focus:ring-[#acac49]/20">
                     <SelectValue placeholder="All Featured" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="feature">Featured</SelectItem>
-                    <SelectItem value="unfeature">UnFeatured</SelectItem>
+                  <SelectContent 
+                    className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50 min-w-[144px]"
+                    position="popper"
+                    side="bottom"
+                    align="start"
+                  >
+                    <SelectItem value="all" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">All</SelectItem>
+                    <SelectItem value="feature" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">Featured</SelectItem>
+                    <SelectItem value="unfeature" className="px-4 py-2 text-sm hover:bg-[#f8f8f8] focus:bg-[#f8f8f8] cursor-pointer rounded-md mx-1">UnFeatured</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

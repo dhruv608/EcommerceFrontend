@@ -31,30 +31,52 @@ export default function ProductRow({ product }: { product: ProductContent }) {
   const [isFeatured, setIsFeatured] = useState(product.isFeatured);
   const [isActive, setIsActive] = useState(product.isActive);
 
-  const handleToggleFeatured = async (checked: boolean) => {
+  const handleToggleFeatured = async () => {
     // Don't allow featuring if product is not active
-    if (!isActive && checked) {
+    if (!isActive && !isFeatured) {
       toast.error("Product must be active to be featured");
       return;
     }
     
-    setIsFeatured(checked);
+    const newFeaturedState = !isFeatured;
+    setIsFeatured(newFeaturedState);
     try {
-      await api.patch(`/products/${product.id}`, { isFeatured: checked });
+      await api.patch(`/products/${product.id}`, { isFeatured: newFeaturedState });
       toast.success("Featured status updated");
     } catch {
-      setIsFeatured(!checked);
+      setIsFeatured(!newFeaturedState);
       toast.error("Failed to update featured status");
     }
   };
 
-  const handleToggleActive = async (checked: boolean) => {
-    setIsActive(checked);
+  const handleToggleActive = async () => {
+    const newActiveState = !isActive;
+    setIsActive(newActiveState);
+    
+    // If deactivating, also uncheck featured
+    if (!newActiveState && isFeatured) {
+      setIsFeatured(false);
+      
+      try {
+        // Update both isActive and isFeatured in one call
+        await api.patch(`/products/${product.id}`, {
+          isActive: newActiveState,
+          isFeatured: false,
+        });
+        toast.success("Product deactivated and removed from featured");
+      } catch {
+        setIsActive(!newActiveState);
+        setIsFeatured(true);
+        toast.error("Failed to update status");
+      }
+      return;
+    }
+
     try {
-      await api.patch(`/products/${product.id}`, { isActive: checked });
+      await api.patch(`/products/${product.id}`, { isActive: newActiveState });
       toast.success("Status updated");
     } catch {
-      setIsActive(!checked);
+      setIsActive(!newActiveState);
       toast.error("Failed to update status");
     }
   };
@@ -141,8 +163,8 @@ export default function ProductRow({ product }: { product: ProductContent }) {
             <div className="relative">
               <ToggleSwitch
                 checked={isFeatured}
-                onChange={handleToggleFeatured}
-                onClick={(e) => e.stopPropagation()}
+                onChange={() => {}} // Empty onChange since we handle onClick
+                onClick={handleToggleFeatured}
                 disabled={!isActive}
               />
               {!isActive && (
@@ -157,8 +179,8 @@ export default function ProductRow({ product }: { product: ProductContent }) {
             <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Active</span>
             <ToggleSwitch
               checked={isActive}
-              onChange={handleToggleActive}
-              onClick={(e) => e.stopPropagation()}
+              onChange={() => {}} // Empty onChange since we handle onClick
+              onClick={handleToggleActive}
             />
           </div>
         </div>

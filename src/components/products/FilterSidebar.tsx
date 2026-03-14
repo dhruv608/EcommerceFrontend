@@ -19,8 +19,10 @@ export default function FilterSidebar({ categories, totalProductCount }: FilterS
     categoryId,
     minPrice,
     maxPrice,
+    isFeatured,
     setCategoryId,
     setPriceRange,
+    setFeatured,
     clearAllFilters
   } = useFilterStore();
 
@@ -68,6 +70,24 @@ export default function FilterSidebar({ categories, totalProductCount }: FilterS
               </Label>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Featured Products */}
+      <div className="mb-6">
+        <h4 className="text-sm font-semibold mb-3 text-gray-700">Special</h4>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
+            <Checkbox 
+              id="featured" 
+              checked={isFeatured}
+              onCheckedChange={(checked) => setFeatured(checked as boolean)}
+              className="w-4 h-4 accent-[#a3a23d]"
+            />
+            <Label htmlFor="featured" className="text-sm cursor-pointer flex-1">
+              <span>Featured Products</span>
+            </Label>
+          </div>
         </div>
       </div>
 
@@ -169,7 +189,7 @@ export default function FilterSidebar({ categories, totalProductCount }: FilterS
         </div>
 
       {/* Clear Filters Button */}
-      {(categoryId || minPrice > 0) && (
+      {(categoryId || minPrice > 0 || isFeatured) && (
         <div className="mt-6 pt-4 border-t border-[#e5e7eb]">
           <Button 
             variant="outline"
