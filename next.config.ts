@@ -12,6 +12,28 @@ const nextConfig: NextConfig = {
   },
   reactCompiler: true,
   turbopack: {},
+  // Disable caching for dynamic routes
+  async headers() {
+    return [
+      {
+        source: "/products/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, proxy-revalidate",
+          },
+          {
+            key: "Pragma",
+            value: "no-cache",
+          },
+          {
+            key: "Expires",
+            value: "0",
+          },
+        ],
+      },
+    ];
+  },
   webpack: (config, { dev }) => {
     if (dev) {
       // Disable Console Ninja during development
