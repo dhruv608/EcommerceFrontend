@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 async function getProducts(
   params: Record<string, string | string[] | undefined>
 ): Promise<Product> {
+  console.log("getProducts called with params:", params); // Debug log
   const query = new URLSearchParams();
 
   if (typeof params.categoryId === "string")
@@ -39,6 +40,8 @@ async function getProducts(
   query.append("page", typeof params.page === "string" ? params.page : "0");
   query.append("size", "12");
   query.append("isActive", "true");
+
+  console.log("Final API query:", query.toString()); // Debug log
 
   try {
     const { data } = await api.get(`/products?${query.toString()}`);
@@ -81,19 +84,73 @@ export default function ProductsPage({
 
   useEffect(() => {
     const fetchData = async () => {
-      const params = await searchParams;
-      setResolvedSearchParams(params);
-      
-      const [productResponse, categoriesResponse] = await Promise.all([
-        getProducts(params),
-        getCategories(),
-      ]);
+      try {
+        const params = await searchParams;
+        console.log("Fetching products with params:", params); // Debug log
+        setResolvedSearchParams(params);
+        
+        const [productResponse, categoriesResponse] = await Promise.all([
+          getProducts(params),
+          getCategories(),
+        ]);
 
-      setProductData(productResponse);
-      setCategories(categoriesResponse);
+        setProductData(productResponse);
+        setCategories(categoriesResponse);
+      } catch (error) {
+        console.error("Error in fetchData:", error);
+        // Fallback: parse URL manually
+        const urlParams = new URLSearchParams(window.location.search);
+        const manualParams: Record<string, string | string[] | undefined> = {};
+        urlParams.forEach((value, key) => {
+          manualParams[key] = value;
+        });
+        console.log("Fallback: using manual URL params:", manualParams);
+        setResolvedSearchParams(manualParams);
+        
+        const [productResponse, categoriesResponse] = await Promise.all([
+          getProducts(manualParams),
+          getCategories(),
+        ]);
+
+        setProductData(productResponse);
+        setCategories(categoriesResponse);
+      }
     };
 
     fetchData();
+  }, [searchParams]);
+
+  // Also add a listener for URL changes
+  useEffect(() => {
+    const handleRouteChange = () => {
+      // Refetch data when URL changes
+      const fetchData = async () => {
+        try {
+          const params = await searchParams;
+          console.log("Route changed, refetching with params:", params);
+          setResolvedSearchParams(params);
+          
+          const [productResponse, categoriesResponse] = await Promise.all([
+            getProducts(params),
+            getCategories(),
+          ]);
+
+          setProductData(productResponse);
+          setCategories(categoriesResponse);
+        } catch (error) {
+          console.error("Error in route change handler:", error);
+        }
+      };
+
+      fetchData();
+    };
+
+    // Listen for popstate events (browser back/forward)
+    window.addEventListener('popstate', handleRouteChange);
+    
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange);
+    };
   }, [searchParams]);
 
   const currentCategoryName =
