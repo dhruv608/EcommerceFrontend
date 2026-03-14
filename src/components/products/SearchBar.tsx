@@ -58,13 +58,7 @@ export default function SearchBar() {
   };
 
   return (
-    <form onSubmit={(e) => {
-      e.preventDefault();
-      const value = (e.target as HTMLFormElement).querySelector("input")?.value;
-      if (value) {
-        handleSearch(value);
-      }
-    }} className="relative w-full md:w-auto">
+    <div className="relative w-full md:w-auto">
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         <input
@@ -76,6 +70,6 @@ export default function SearchBar() {
           className="h-10 w-full md:w-64 pl-10 pr-4 text-sm border border-[#e5e7eb] rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#a3a23d] focus:border-transparent"
         />
       </div>
-    </form>
+    </div>
   );
 }

@@ -1,3 +1,6 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { Category, Product } from "@/lib/types";
 import api from "@/lib/api";
 import FilterSidebar from "@/components/products/FilterSidebar";
@@ -8,6 +11,8 @@ import ProductCard from "@/components/products/ProductCard";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import ProductPagination from "@/components/products/ProductPagination";
+import EmptyProductsState from "@/components/ui/EmptyProductsState";
+import { useRouter } from "next/navigation";
 
 // --- API FETCH FUNCTIONS ---
 
@@ -64,53 +69,82 @@ async function getCategories(): Promise<Category[]> {
 
 // --- PAGE COMPONENT ---
 
-export default async function ProductsPage({
+export default function ProductsPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  // ✅ MOST IMPORTANT FIX
-  const params = await searchParams;
+  const router = useRouter();
+  const [productData, setProductData] = useState<Product | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [resolvedSearchParams, setResolvedSearchParams] = useState<Record<string, string | string[] | undefined>>({});
 
-  const [productData, categories] = await Promise.all([
-    getProducts(params),
-    getCategories(),
-  ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const params = await searchParams;
+      setResolvedSearchParams(params);
+      
+      const [productResponse, categoriesResponse] = await Promise.all([
+        getProducts(params),
+        getCategories(),
+      ]);
+
+      setProductData(productResponse);
+      setCategories(categoriesResponse);
+    };
+
+    fetchData();
+  }, [searchParams]);
 
   const currentCategoryName =
     categories.find(
-      (c) => c.id.toString() === params.categoryId
+      (c) => c.id.toString() === ((resolvedSearchParams.categoryId as string) || "")
     )?.name || "All Collection";
 
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* HEADER */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <div className="flex-1">
-          <h1 className="text-4xl font-black tracking-tight text-gray-900 capitalize">
-            {currentCategoryName}
-          </h1>
-          <p className="text-muted-foreground mt-2 text-sm">
-            Showing {productData.totalElements} results
-          </p>
-        </div>
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          <MobileFilter categories={categories} />
-          <SearchBar />
-          <SortSelect />
+  if (!productData || !categories) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="flex justify-center items-center py-20">
+          <div className="text-center">Loading...</div>
         </div>
       </div>
-      <Separator className="mb-6" />
+    );
+  }
 
-      <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
-        <aside className="hidden md:block sticky top-[100px] h-fit">
+  return (
+    <>
+      {/* Fixed Sidebar - Desktop Only */}
+      <aside className="hidden md:block fixed left-0 top-[80px] h-[calc(100vh-80px)] w-64 overflow-y-auto overflow-x-hidden z-40">
+        <div className="h-full px-2">
           <FilterSidebar categories={categories} />
-        </aside>
+        </div>
+      </aside>
+      
+      {/* Main Content - Offset from Sidebar */}
+      <main className="ml-0 md:ml-64 min-h-screen">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          {/* HEADER */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <div className="flex-1">
+              <h1 className="text-4xl font-black tracking-tight text-gray-900 capitalize">
+                {currentCategoryName}
+              </h1>
+              <p className="text-muted-foreground mt-2 text-sm">
+                Showing {productData.totalElements} results
+              </p>
+            </div>
+            <div className="flex items-center gap-2 w-full md:w-auto">
+              <MobileFilter categories={categories} />
+              <SearchBar />
+              <SortSelect />
+            </div>
+          </div>
+          <Separator className="mb-6" />
 
-        <main>
+          {/* PRODUCT GRID */}
           {productData.content.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {productData.content.map((product, index) => (
                   <ProductCard
                     key={product.id}
@@ -128,15 +162,11 @@ export default async function ProductsPage({
               )}
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center py-20">
-              <p className="text-xl font-bold text-gray-500">No products found</p>
-              <Link href="/products" className="text-indigo-600 mt-3">
-                Clear all filters
-              </Link>
-            </div>
+            // Empty state with DotLottie animation
+            <EmptyProductsState clearFilters={() => router.push("/products")} />
           )}
-        </main>
-      </div>
-    </div>
+        </div>
+      </main>
+    </>
   );
 }

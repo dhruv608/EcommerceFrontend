@@ -1,3 +1,5 @@
+"use client";
+
 export default function ProductInfo({ product }: any) {
   return (
     <div className="bg-white p-6 rounded border space-y-3">

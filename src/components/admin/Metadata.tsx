@@ -1,3 +1,5 @@
+"use client";
+
 export default function Metadata({ product }: any) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-4">

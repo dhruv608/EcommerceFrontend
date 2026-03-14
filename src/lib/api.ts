@@ -8,7 +8,7 @@ api.interceptors.request.use((config) => {
   if (typeof window === "undefined") return config;
   const token = localStorage.getItem("token");
 
-  // 🔐 auth routes pe token mat bhejo
+ 
   if (
     token &&
     !config.url?.includes("/auth/login") &&
