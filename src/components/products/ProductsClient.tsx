@@ -83,8 +83,11 @@ export default function ProductsClient({
     return params
   }
 
-  // Fetch data function
+  // Fetch data function with loading coordination
   const fetchData = async () => {
+    // Don't show loading if already loading (prevents double shimmer)
+    if (isLoading) return
+    
     setIsLoading(true)
     try {
       const params = getApiParams()
