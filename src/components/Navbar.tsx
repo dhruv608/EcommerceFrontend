@@ -38,7 +38,7 @@ export default function Navbar() {
     const fetchCategories = async () => {
       try {
         const response = await api.get('/categories?activeOnly=true')
-        logger.log('Categories loaded:', response.data)
+        // logger.log('Categories loaded:', response.data)
         setCategories(response.data)
       } catch (error) {
         logger.error('Failed to fetch categories:', error)

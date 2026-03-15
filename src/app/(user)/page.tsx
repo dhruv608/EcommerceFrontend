@@ -13,9 +13,14 @@ async function getFeaturedProducts() {
 
   return res.data?.content || []
 }
-async function getAllFeaturedProducts() {
+
+async function getTrendingProducts() {
   const res = await api.get('/products', {
-    params: { isFeatured: true },
+    params: { 
+      isFeatured: true,
+      isActive: true,
+      size: 10
+    },
   })
 
   return res.data?.content || []
@@ -51,7 +56,7 @@ export async function generateHomePageMetadata(): Promise<Metadata> {
 export default async function Home() {
   const featuredProducts = await getFeaturedProducts()
   const categories = await getCategories()
-  const allFeaturedProducts = await getAllFeaturedProducts()
+  const trendingProducts = await getTrendingProducts()
 
   // Generate structured data
   const structuredData = generateStructuredData({
@@ -74,7 +79,7 @@ export default async function Home() {
         {/* Shop by Category */}
         <CategorySection categories={categories} />
 
-        <FeaturedSection allFeaturedProducts={allFeaturedProducts} />
+        <FeaturedSection allFeaturedProducts={trendingProducts} />
       </main>
     </>
   )

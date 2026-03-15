@@ -108,6 +108,7 @@ export default function CategorySection({ categories }: { categories: Category[]
                       fill
                       className={`${imageClass} w-full h-full object-cover object-center`}
                       sizes="140px"
+                      loading="eager"
                     />
 
                     {/* Enhanced Gradient Overlay */}
@@ -151,6 +152,7 @@ export default function CategorySection({ categories }: { categories: Category[]
                       fill
                       className={`${imageClass} w-full h-full object-cover object-center`}
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      loading="eager"
                     />
 
                     {/* Overlay Gradient */}

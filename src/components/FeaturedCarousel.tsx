@@ -92,6 +92,7 @@ function ProductSlideEntry({ product }: { product: any }) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-contain p-8 transition-all duration-700 transform hover:scale-105"
             priority
+            loading="eager"
           />
 
           {/* Floating Badge */}

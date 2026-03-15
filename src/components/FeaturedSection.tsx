@@ -74,6 +74,7 @@ const FeaturedSection = ({ allFeaturedProducts }: { allFeaturedProducts: Product
                       product.images[1] ? 'group-hover:opacity-0' : 'group-hover:scale-110'
                     }`}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    loading={allFeaturedProducts.indexOf(product) < 4 ? "eager" : "lazy"}
                   />
 
                   {/* Image 2 (Hover Effect - Agar 2nd image hai to dikhegi) */}
