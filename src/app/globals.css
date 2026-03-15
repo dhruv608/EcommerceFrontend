@@ -82,6 +82,15 @@
   to { transform: scale(1); opacity: 1; }
 }
 
+@keyframes shimmer {
+  0% { background-position: -468px 0; }
+  100% { background-position: 468px 0; }
+}
+
+.skeleton-fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out;
 }

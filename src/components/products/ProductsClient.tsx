@@ -13,6 +13,7 @@ import ProductPagination from "@/components/products/ProductPagination";
 import EmptyProductsState from "@/components/ui/EmptyProductsState";
 import { useFilterStore, useInitializeFilters } from "@/store/filterStore";
 import ClientOnly from "./ClientOnly";
+import { ProductGridSkeleton } from "@/components/skeleton";
 
 // ProductsClient component for handling interactive product filtering
 interface ProductsClientProps {
@@ -31,6 +32,7 @@ export default function ProductsClient({
   const [productData, setProductData] = useState<Product>(initialProductData);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [categoryName, setCategoryName] = useState<string>(initialCategoryName);
+  const [isLoading, setIsLoading] = useState(false);
   
   // Get filter state
   const filterState = useFilterStore();
@@ -82,22 +84,29 @@ export default function ProductsClient({
 
   // Fetch data function
   const fetchData = async () => {
-    const params = getApiParams();
-    console.log("Fetching products with params:", params);
-    
-    const [productResponse, categoriesResponse] = await Promise.all([
-      api.get(`/products?${new URLSearchParams(params as any).toString()}`).then(res => res.data),
-      api.get("/categories?activeOnly=true").then(res => res.data),
-    ]);
+    setIsLoading(true);
+    try {
+      const params = getApiParams();
+      console.log("Fetching products with params:", params);
+      
+      const [productResponse, categoriesResponse] = await Promise.all([
+        api.get(`/products?${new URLSearchParams(params as any).toString()}`).then(res => res.data),
+        api.get("/categories?activeOnly=true").then(res => res.data),
+      ]);
 
-    setProductData(productResponse);
-    setCategories(categoriesResponse);
-    
-    // Update category name
-    const newCategoryName = categoriesResponse.find(
-      (c: Category) => c.id.toString() === (filterState.categoryId || "")
-    )?.name || "All Collection";
-    setCategoryName(newCategoryName);
+      setProductData(productResponse);
+      setCategories(categoriesResponse);
+      
+      // Update category name
+      const newCategoryName = categoriesResponse.find(
+        (c: Category) => c.id.toString() === (filterState.categoryId || "")
+      )?.name || "All Collection";
+      setCategoryName(newCategoryName);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Initialize data on mount and when filters change (but not on initial load)
@@ -146,7 +155,9 @@ export default function ProductsClient({
           <Separator className="mb-6" />
 
           {/* PRODUCT GRID */}
-          {productData.content.length > 0 ? (
+          {isLoading ? (
+            <ProductGridSkeleton count={12} />
+          ) : productData.content.length > 0 ? (
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-4">
                 {productData.content.map((product, index) => (

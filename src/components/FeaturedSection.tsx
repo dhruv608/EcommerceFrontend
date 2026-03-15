@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ShoppingBag, Star } from "lucide-react"; // npm install lucide-react
 import { ProductContent } from "@/lib/types";
 import { Button } from "./ui/button";
+import { ProductGridSkeleton } from "./skeleton";
 
 // Aapke screenshot ke hisab se Type definition
 // Ise apne '@/lib/types' me bhi update kar sakte ho
@@ -14,7 +15,28 @@ const FeaturedSection = ({
   allFeaturedProducts: ProductContent[];
 }) => {
   // Agar products empty hain to crash na ho
-  if (!allFeaturedProducts || allFeaturedProducts.length === 0) return null;
+  if (!allFeaturedProducts || allFeaturedProducts.length === 0) {
+    return (
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4 max-w-7xl">
+          {/* Header Skeleton */}
+          <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-4">
+            <div className="max-w-2xl">
+              <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-12 w-64 bg-gray-200 rounded animate-pulse" />
+              <div className="h-6 w-48 bg-gray-200 rounded animate-pulse" />
+            </div>
+            <div className="h-6 w-32 bg-gray-200 rounded animate-pulse" />
+          </div>
+
+          {/* Products Grid Skeleton */}
+          <ProductGridSkeleton count={8} />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 bg-gray-50">

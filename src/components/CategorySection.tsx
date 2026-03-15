@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ShoppingBag } from "lucide-react";
+import { CategoryCardSkeleton, PageHeaderSkeleton } from "./skeleton";
 
 interface Category {
   id: number;
@@ -25,6 +26,33 @@ const imageStyles: Record<number, string> = {
 };
 
 export default function CategorySection({ categories }: { categories: Category[] }) {
+  // Show skeleton while loading
+  if (!categories || categories.length === 0) {
+    return (
+      <section className="section-premium bg-gradient-to-br from-background via-secondary/10 to-background">
+        <div className="container-premium">
+          {/* Header Skeleton */}
+          <PageHeaderSkeleton withButton={true} />
+
+          {/* Category Cards Skeleton */}
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {Array(6).fill(0).map((_, index) => (
+              <CategoryCardSkeleton key={index} />
+            ))}
+          </div>
+
+          {/* Mobile Category Cards */}
+          <div className="md:hidden flex gap-4 overflow-x-auto px-4 pb-2">
+            {Array(6).fill(0).map((_, index) => (
+              <div key={index} className="min-w-[140px] h-36">
+                <CategoryCardSkeleton />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="section-premium bg-gradient-to-br from-background via-secondary/10 to-background">
