@@ -28,4 +28,28 @@ api.interceptors.request.use(config => {
   return config
 })
 
+api.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('API Error:', {
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message,
+      url: error.config?.url,
+      timestamp: new Date().toISOString()
+    })
+
+    // Handle 400 errors specifically
+    if (error.response?.status === 400) {
+      console.warn('Bad Request - Check API parameters')
+    }
+
+    // Handle network errors
+    if (!error.response) {
+      console.warn('Network Error - Backend may be down')
+    }
+
+    return Promise.reject(error)
+  }
+)
+
 export default api

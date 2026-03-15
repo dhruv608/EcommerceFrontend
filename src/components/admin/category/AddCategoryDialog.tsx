@@ -11,6 +11,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { toast } from 'sonner'
@@ -61,6 +62,9 @@ export default function AddCategoryDialog({ onSuccess }: { onSuccess: () => void
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Add New Category</DialogTitle>
+          <DialogDescription>
+            Create a new product category to organize your inventory
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">

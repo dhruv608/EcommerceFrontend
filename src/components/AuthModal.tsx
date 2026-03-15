@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
@@ -138,11 +138,16 @@ export default function AuthModal() {
       <DialogContent className="sm:max-w-lg bg-white rounded-2xl shadow-xl p-8">
         <DialogHeader className="pb-8">
           <div className="flex flex-col items-center space-y-3">
-            <img src="/logo.svg" alt="Light Store Logo" className="h-8 w-auto" />
+            <img src="/logo.svg" alt="Light Store Logo" className="h-8 w-auto" loading="eager" />
             <DialogTitle className="text-center text-2xl font-bold text-foreground">
               Welcome to <span className="text-black">Light</span>
               <span className="text-[#acac49]"> Store</span>
             </DialogTitle>
+            <DialogDescription>
+              {modalActiveTab === 'login'
+                ? 'Sign in to your account to continue shopping'
+                : 'Join us to create your shopping experience'}
+            </DialogDescription>
           </div>
           <p className="text-center text-sm text-muted-foreground mt-3">
             Your trusted online shopping destination

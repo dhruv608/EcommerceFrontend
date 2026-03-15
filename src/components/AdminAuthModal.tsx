@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -71,6 +71,9 @@ export default function AdminAuthModal({ isOpen, onClose }: AdminAuthModalProps)
             <Shield className="h-5 w-5 text-[#acac49]" />
             Admin Login
           </DialogTitle>
+          <DialogDescription>
+            Enter your admin credentials to access the admin dashboard
+          </DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="login" className="w-full">
