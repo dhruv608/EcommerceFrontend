@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
+import { CartPageSkeleton } from '@/components/skeleton'
+import { useAuthModal } from '@/context/AuthModalContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -25,6 +27,7 @@ export default function CartPage() {
   const { cartItems, cartCount, cartTotal, loading, updateQuantity, removeFromCart, clearCart } =
     useCart()
   const { isLoggedIn } = useAuth()
+  const { openAuthModal } = useAuthModal()
   const router = useRouter()
 
   if (!isLoggedIn) {
@@ -36,7 +39,7 @@ export default function CartPage() {
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">Login Required</h2>
           <p className="text-muted-foreground mb-6">Please login to view your shopping cart</p>
-          <Button onClick={() => router.push('/')} className="btn-primary px-8 py-3">
+          <Button onClick={() => openAuthModal('login')} className="btn-primary px-8 py-3">
             Login to Continue
           </Button>
         </div>
@@ -45,14 +48,7 @@ export default function CartPage() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading your cart...</p>
-        </div>
-      </div>
-    )
+    return <CartPageSkeleton />
   }
 
   if (cartItems.length === 0) {

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
 import { useAuth } from '@/context/AuthContext'
+import { useAuthModal } from '@/context/AuthModalContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -17,6 +18,7 @@ import api from '@/lib/api'
 export default function CheckoutPage() {
   const { cartItems, cartTotal, clearCart } = useCart()
   const { user } = useAuth()
+  const { openAuthModal } = useAuthModal()
   const router = useRouter()
   const [isProcessing, setIsProcessing] = useState(false)
   const [formData, setFormData] = useState({
@@ -36,7 +38,7 @@ export default function CheckoutPage() {
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Login Required</h2>
           <p className="text-gray-600 mb-6">Please login to proceed with checkout</p>
           <Button
-            onClick={() => router.push('/auth/login')}
+            onClick={() => openAuthModal('login')}
             className="bg-[#acac49] hover:bg-[#96963f] text-white rounded-lg px-6 py-3 font-medium"
           >
             Login to Continue

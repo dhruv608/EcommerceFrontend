@@ -22,6 +22,8 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
+import { OrdersPageSkeleton } from '@/components/skeleton'
+import { useAuthModal } from '@/context/AuthModalContext'
 import api from '@/lib/api'
 
 interface Order {
@@ -58,6 +60,7 @@ const ORDER_STATUS = {
 
 export default function UserOrdersPage() {
   const { user, isLoggedIn } = useAuth()
+  const { openAuthModal } = useAuthModal()
   const router = useRouter()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
@@ -65,22 +68,48 @@ export default function UserOrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('ALL')
+  const [shouldShowLoginModal, setShouldShowLoginModal] = useState(false)
+  const [hasAttemptedAuth, setHasAttemptedAuth] = useState(false)
 
   useEffect(() => {
     // Mark auth as checked after component mounts
     setAuthChecked(true)
   }, [])
 
+  // Handle login modal in a separate effect to avoid setState during render
+  useEffect(() => {
+    // Only show modal if auth is checked, user is not logged in, and we haven't attempted auth yet
+    // This prevents modal from showing on page refresh when user is actually logged in
+    if (authChecked && !isLoggedIn && shouldShowLoginModal && !hasAttemptedAuth) {
+      // Add a small delay to ensure auth state is fully loaded
+      const timer = setTimeout(() => {
+        if (!isLoggedIn) { // Double check after delay
+          openAuthModal('login')
+        }
+        setShouldShowLoginModal(false)
+        setHasAttemptedAuth(true)
+      }, 500)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [authChecked, isLoggedIn, shouldShowLoginModal, hasAttemptedAuth, openAuthModal])
+
   useEffect(() => {
     if (!authChecked) return // Wait for auth state to be checked
 
     if (!isLoggedIn) {
-      router.push('/auth/login')
       return
     }
 
     fetchUserOrders()
   }, [isLoggedIn, user, authChecked])
+
+  // Reset auth attempt flag when user logs out
+  useEffect(() => {
+    if (!isLoggedIn && authChecked) {
+      setHasAttemptedAuth(false)
+    }
+  }, [isLoggedIn, authChecked])
 
   const fetchUserOrders = async () => {
     if (!user?.userId) return
@@ -117,36 +146,24 @@ export default function UserOrdersPage() {
   }
 
   if (!authChecked) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#acac49] border-t-transparent mx-auto mb-4"></div>
-        </div>
-      </div>
-    )
+    return <OrdersPageSkeleton />
   }
 
   if (!isLoggedIn) {
-    // Redirect to login page instead of showing a message
-    router.push('/auth/login')
-    return null
+    if (!shouldShowLoginModal) {
+      setShouldShowLoginModal(true)
+    }
+    return <OrdersPageSkeleton />
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#acac49] border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your orders...</p>
-        </div>
-      </div>
-    )
+    return <OrdersPageSkeleton />
   }
 
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link

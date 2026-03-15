@@ -18,3 +18,7 @@ export { default as DelayedSkeleton } from './DelayedSkeleton'
 
 export { default as LoadingWrapper } from './LoadingWrapper'
 
+export { default as CartPageSkeleton } from './CartPageSkeleton'
+
+export { default as OrdersPageSkeleton } from './OrdersPageSkeleton'
+

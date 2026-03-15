@@ -8,9 +8,11 @@ import Image from 'next/image'
 import api from '@/lib/api'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { useAuthModal } from '@/context/AuthModalContext'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { openAuthModal } = useAuthModal()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -31,8 +33,9 @@ export default function RegisterPage() {
         password,
       })
 
-      toast.success('Account created. Please login.')
-      router.push('/auth/login')
+      toast.success('Account created successfully! Please sign in.')
+      router.push('/')
+      setTimeout(() => openAuthModal('login'), 100)
     } catch (err) {
       toast.error('Registration failed')
     } finally {
@@ -87,9 +90,12 @@ export default function RegisterPage() {
 
         <p className="text-sm text-center text-gray-500">
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-[#acac49] font-medium">
+          <button 
+            onClick={() => openAuthModal('login')}
+            className="text-[#acac49] font-medium hover:underline"
+          >
             Login
-          </Link>
+          </button>
         </p>
       </div>
     </div>

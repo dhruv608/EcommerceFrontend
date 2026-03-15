@@ -168,7 +168,7 @@ export default function CategorySection({ categories }: { categories: Category[]
                 {/* Mobile: Removed - handled in separate mobile section above */}
 
                 {/* Desktop: Bottom overlay with title and subtitle */}
-                <div className="absolute bottom-6 left-6 text-white">
+                <div className="absolute botrtom-6 left-6 text-white">
                   <div className="space-y-2">
                     <h3 className="text-3xl font-bold uppercase tracking-wider">{cat.name}</h3>
                     <p className="text-sm opacity-90 line-clamp-1">{cat.description}</p>
