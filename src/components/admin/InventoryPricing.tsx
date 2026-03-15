@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 export default function InventoryPricing({ product }: any) {
   return (
@@ -17,5 +17,5 @@ export default function InventoryPricing({ product }: any) {
         </div>
       </div>
     </div>
-  );
+  )
 }

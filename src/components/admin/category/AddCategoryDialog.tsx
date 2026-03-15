@@ -1,55 +1,51 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import api  from "@/lib/api";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
+import { useState } from 'react'
+import api from '@/lib/api'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Plus } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { toast } from "sonner";
+} from '@/components/ui/dialog'
+import { toast } from 'sonner'
 
-export default function AddCategoryDialog({
-  onSuccess,
-}: {
-  onSuccess: () => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function AddCategoryDialog({ onSuccess }: { onSuccess: () => void }) {
+  const [open, setOpen] = useState(false)
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!name.trim()) {
-      toast.error("Category name is required");
-      return;
+      toast.error('Category name is required')
+      return
     }
 
     try {
-      setLoading(true);
+      setLoading(true)
 
-      await api.post("/categories", {
+      await api.post('/categories', {
         name,
         description,
-      });
+      })
 
-      toast.success("Category created");
-      setOpen(false);
-      setName("");
-      setDescription("");
-      onSuccess();
+      toast.success('Category created')
+      setOpen(false)
+      setName('')
+      setDescription('')
+      onSuccess()
     } catch (err) {
-      toast.error("Failed to create category");
+      toast.error('Failed to create category')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -73,7 +69,7 @@ export default function AddCategoryDialog({
             <Input
               placeholder="e.g. Footwear"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
             />
           </div>
 
@@ -83,25 +79,21 @@ export default function AddCategoryDialog({
               placeholder="Enter category description..."
               rows={4}
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={e => setDescription(e.target.value)}
             />
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
 
             <Button type="submit" disabled={loading}>
-              {loading ? "Creating..." : "Create"}
+              {loading ? 'Creating...' : 'Create'}
             </Button>
           </div>
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

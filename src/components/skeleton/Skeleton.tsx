@@ -1,13 +1,13 @@
-import React from 'react';
+import React from 'react'
 
 interface SkeletonProps {
-  className?: string;
-  children?: React.ReactNode;
+  className?: string
+  children?: React.ReactNode
 }
 
 export const Skeleton: React.FC<SkeletonProps> = ({ className = '', children }) => {
   return (
-    <div 
+    <div
       className={`
         bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 
         bg-[length:400%_100%] 
@@ -22,7 +22,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({ className = '', children }) 
     >
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default Skeleton;
+export default Skeleton

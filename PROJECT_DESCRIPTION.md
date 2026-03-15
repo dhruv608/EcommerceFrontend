@@ -9,6 +9,7 @@ Light Store is a sophisticated e-commerce solution that combines beautiful desig
 ## 🎯 Key Features
 
 ### 🛒 **Customer Experience**
+
 - **Smart Shopping Cart** - Real-time cart management with guest support and persistent sessions
 - **Advanced Product Discovery** - Intelligent search, filtering, and categorization
 - **Secure Checkout Process** - Multi-step checkout with multiple payment integrations
@@ -16,6 +17,7 @@ Light Store is a sophisticated e-commerce solution that combines beautiful desig
 - **Responsive Design** - Mobile-first approach with flawless cross-device compatibility
 
 ### 🏢 **Admin Dashboard**
+
 - **Comprehensive Analytics** - Sales insights, customer metrics, and performance tracking
 - **Product Management** - Full CRUD operations with image uploads and inventory tracking
 - **Order Processing** - Complete order lifecycle management from placement to fulfillment
@@ -23,6 +25,7 @@ Light Store is a sophisticated e-commerce solution that combines beautiful desig
 - **Category Organization** - Hierarchical product categorization and management
 
 ### 🔧 **Technical Excellence**
+
 - **Microservices Architecture** - Scalable backend with Spring Boot
 - **Modern Frontend** - Next.js 14 with App Router and server-side rendering
 - **Real-time Features** - Live cart updates and order status tracking
@@ -32,6 +35,7 @@ Light Store is a sophisticated e-commerce solution that combines beautiful desig
 ## 🛠️ Technology Stack
 
 ### 🎨 **Frontend**
+
 - **Next.js 14** - React framework with App Router and server components
 - **TypeScript 5** - Type-safe development with enhanced IntelliSense
 - **TailwindCSS 3** - Utility-first CSS framework for rapid UI development
@@ -40,6 +44,7 @@ Light Store is a sophisticated e-commerce solution that combines beautiful desig
 - **Framer Motion** - Smooth animations and micro-interactions
 
 ### ⚙️ **Backend**
+
 - **Spring Boot 3** - Enterprise-grade Java framework
 - **Spring Security 6** - Comprehensive authentication and authorization
 - **Spring Data JPA** - Efficient database access with ORM
@@ -73,18 +78,21 @@ Light Store follows a **design-first approach** with:
 ## 🚀 What Makes Light Store Special
 
 ### 🎯 **Business Value**
+
 - **Scalable Architecture** - Handles thousands of products and concurrent users
 - **Conversion Optimized** - Streamlined checkout process reduces cart abandonment
 - **Analytics Driven** - Data insights inform business decisions
 - **SEO Friendly** - Server-side rendering ensures optimal search visibility
 
 ### 🔒 **Security & Reliability**
+
 - **Enterprise Security** - Multi-layer authentication with JWT tokens
 - **Data Protection** - Secure API endpoints with rate limiting
 - **Error Handling** - Comprehensive error management with user-friendly messages
 - **Performance Monitoring** - Real-time performance tracking and optimization
 
 ### 🌈 **Innovation Features**
+
 - **Guest Shopping** - Allow browsing without forced registration
 - **Smart Recommendations** - AI-powered product suggestions
 - **Real-time Updates** - Live inventory and order status
@@ -103,6 +111,7 @@ This project demonstrates **full-stack development expertise** with:
 ## 🎯 Target Audience
 
 Perfect for:
+
 - **E-commerce Businesses** looking for a modern, scalable platform
 - **Developers** learning full-stack development with modern technologies
 - **Teams** needing a customizable e-commerce solution

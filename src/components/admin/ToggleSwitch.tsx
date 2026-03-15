@@ -1,29 +1,34 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 
 interface ToggleSwitchProps {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  disabled?: boolean;
-  onClick?: (e: React.MouseEvent) => void;
+  checked: boolean
+  onChange: (checked: boolean) => void
+  disabled?: boolean
+  onClick?: (e: React.MouseEvent) => void
 }
 
-export default function ToggleSwitch({ checked, onChange, disabled = false, onClick }: ToggleSwitchProps) {
+export default function ToggleSwitch({
+  checked,
+  onChange,
+  disabled = false,
+  onClick,
+}: ToggleSwitchProps) {
   return (
     <button
       type="button"
       role="switch"
       aria-checked={checked}
       disabled={disabled}
-      onClick={(e) => {
-        e.stopPropagation();
-        if (disabled) return;
-        
+      onClick={e => {
+        e.stopPropagation()
+        if (disabled) return
+
         if (onClick) {
-          onClick(e);
+          onClick(e)
         } else {
-          onChange(!checked);
+          onChange(!checked)
         }
       }}
       className={`
@@ -40,5 +45,5 @@ export default function ToggleSwitch({ checked, onChange, disabled = false, onCl
         `}
       />
     </button>
-  );
+  )
 }

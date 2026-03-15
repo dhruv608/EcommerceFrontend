@@ -1,0 +1,13 @@
+# Prettier ignore file
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+*.log
+.DS_Store
+.env*
+public/
+*.min.js
+*.min.css

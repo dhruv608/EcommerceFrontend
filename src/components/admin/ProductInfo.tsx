@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 export default function ProductInfo({ product }: any) {
   return (
@@ -20,5 +20,5 @@ export default function ProductInfo({ product }: any) {
         <p className="text-sm">{product.description}</p>
       </div>
     </div>
-  );
+  )
 }

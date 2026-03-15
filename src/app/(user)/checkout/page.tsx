@@ -1,33 +1,33 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useCart } from "@/context/CartContext";
-import { useAuth } from "@/context/AuthContext";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Truck, ShieldCheck, CreditCard, MapPin, User, Phone, Mail } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
-import { toast } from "sonner";
-import api from "@/lib/api";
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useCart } from '@/context/CartContext'
+import { useAuth } from '@/context/AuthContext'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
+import { ArrowLeft, Truck, ShieldCheck, CreditCard, MapPin, User, Phone, Mail } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { toast } from 'sonner'
+import api from '@/lib/api'
 
 export default function CheckoutPage() {
-  const { cartItems, cartTotal, clearCart } = useCart();
-  const { user } = useAuth();
-  const router = useRouter();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const { cartItems, cartTotal, clearCart } = useCart()
+  const { user } = useAuth()
+  const router = useRouter()
+  const [isProcessing, setIsProcessing] = useState(false)
   const [formData, setFormData] = useState({
-    fullName: user?.name || "",
-    email: user?.email || "",
-    phone: "",
-    address: "",
-    city: "",
-    zipCode: "",
-    paymentMethod: "card"
-  });
+    fullName: user?.name || '',
+    email: user?.email || '',
+    phone: '',
+    address: '',
+    city: '',
+    zipCode: '',
+    paymentMethod: 'card',
+  })
 
   if (!user) {
     return (
@@ -35,12 +35,15 @@ export default function CheckoutPage() {
         <div className="text-center bg-white rounded-xl shadow-sm p-12 max-w-md w-full mx-4">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Login Required</h2>
           <p className="text-gray-600 mb-6">Please login to proceed with checkout</p>
-          <Button onClick={() => router.push("/auth/login")} className="bg-[#acac49] hover:bg-[#96963f] text-white rounded-lg px-6 py-3 font-medium">
+          <Button
+            onClick={() => router.push('/auth/login')}
+            className="bg-[#acac49] hover:bg-[#96963f] text-white rounded-lg px-6 py-3 font-medium"
+          >
             Login to Continue
           </Button>
         </div>
       </div>
-    );
+    )
   }
 
   if (cartItems.length === 0) {
@@ -49,7 +52,9 @@ export default function CheckoutPage() {
         <div className="container mx-auto px-4 py-16">
           <div className="text-center bg-white rounded-xl shadow-sm p-16 max-w-2xl mx-auto">
             <h1 className="text-3xl font-semibold text-gray-900 mb-4">Your Cart is Empty</h1>
-            <p className="text-gray-600 text-lg mb-8">Add items to your cart to proceed with checkout</p>
+            <p className="text-gray-600 text-lg mb-8">
+              Add items to your cart to proceed with checkout
+            </p>
             <Link href="/products">
               <Button className="bg-[#acac49] hover:bg-[#96963f] text-white rounded-lg px-6 py-3 font-medium">
                 Continue Shopping
@@ -58,59 +63,65 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
-      [name]: value
-    }));
-  };
+      [name]: value,
+    }))
+  }
 
   const handleCheckout = async () => {
     // Basic validation
-    if (!formData.fullName || !formData.phone || !formData.address || !formData.city || !formData.zipCode) {
-      toast.error("Please fill in all required fields");
-      return;
+    if (
+      !formData.fullName ||
+      !formData.phone ||
+      !formData.address ||
+      !formData.city ||
+      !formData.zipCode
+    ) {
+      toast.error('Please fill in all required fields')
+      return
     }
 
-    setIsProcessing(true);
+    setIsProcessing(true)
 
     try {
       // Prepare order items from cart
       const orderItems = cartItems.map(item => ({
         productId: item.productId,
-        quantity: item.quantity
-      }));
+        quantity: item.quantity,
+      }))
 
       // Create order via API
       const response = await api.post('/orders', {
         userId: parseInt(user?.userId || '0'),
-        items: orderItems
-      });
+        items: orderItems,
+      })
 
       if (response.data) {
         // Clear cart
-        clearCart();
-        
+        clearCart()
+
         // Store order data for success page
-        localStorage.setItem('lastOrder', JSON.stringify(response.data));
-        
+        localStorage.setItem('lastOrder', JSON.stringify(response.data))
+
         // Show success message
-        toast.success(`Order ${response.data.orderNumber} placed successfully!`);
-        
+        toast.success(`Order ${response.data.orderNumber} placed successfully!`)
+
         // Redirect to order confirmation
-        router.push(`/checkout/success?orderNumber=${response.data.orderNumber}`);
+        router.push(`/checkout/success?orderNumber=${response.data.orderNumber}`)
       }
     } catch (error: any) {
-      console.error('Order creation failed:', error);
-      toast.error(error.response?.data?.message || 'Failed to place order. Please try again.');
+      console.error('Order creation failed:', error)
+      toast.error(error.response?.data?.message || 'Failed to place order. Please try again.')
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -118,7 +129,10 @@ export default function CheckoutPage() {
       <div className="bg-white sticky top-0 z-10">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <Link href="/cart" className="flex items-center gap-2 text-gray-600 text-sm hover:text-[#acac49]">
+            <Link
+              href="/cart"
+              className="flex items-center gap-2 text-gray-600 text-sm hover:text-[#acac49]"
+            >
               <ArrowLeft className="h-4 w-4" />
               Back to Cart
             </Link>
@@ -135,7 +149,7 @@ export default function CheckoutPage() {
             <Card className="bg-white rounded-xl shadow-sm p-6">
               <CardContent className="p-0">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Shipping Information</h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 space-y-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">Full Name</label>
@@ -151,7 +165,7 @@ export default function CheckoutPage() {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">Email</label>
                     <div className="relative">
@@ -166,7 +180,7 @@ export default function CheckoutPage() {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">Phone</label>
                     <div className="relative">
@@ -181,7 +195,7 @@ export default function CheckoutPage() {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">ZIP Code</label>
                     <input
@@ -194,7 +208,7 @@ export default function CheckoutPage() {
                     />
                   </div>
                 </div>
-                
+
                 <div className="mt-4 space-y-2">
                   <label className="text-sm font-medium text-gray-700">Address</label>
                   <div className="relative">
@@ -209,7 +223,7 @@ export default function CheckoutPage() {
                     />
                   </div>
                 </div>
-                
+
                 <div className="mt-4 space-y-2">
                   <label className="text-sm font-medium text-gray-700">City</label>
                   <input
@@ -228,14 +242,14 @@ export default function CheckoutPage() {
             <Card className="bg-white rounded-xl shadow-sm p-6">
               <CardContent className="p-0">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Method</h2>
-                
+
                 <div className="space-y-3">
                   <label className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
                     <input
                       type="radio"
                       name="paymentMethod"
                       value="card"
-                      checked={formData.paymentMethod === "card"}
+                      checked={formData.paymentMethod === 'card'}
                       onChange={handleInputChange}
                       className="mr-3"
                     />
@@ -245,13 +259,13 @@ export default function CheckoutPage() {
                       <div className="text-sm text-gray-500">Visa, Mastercard, Amex</div>
                     </div>
                   </label>
-                  
+
                   <label className="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
                     <input
                       type="radio"
                       name="paymentMethod"
                       value="cod"
-                      checked={formData.paymentMethod === "cod"}
+                      checked={formData.paymentMethod === 'cod'}
                       onChange={handleInputChange}
                       className="mr-3"
                     />
@@ -271,10 +285,10 @@ export default function CheckoutPage() {
             <Card className="bg-white rounded-xl shadow-sm sticky top-24">
               <CardContent className="p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
-                
+
                 {/* Order Items */}
                 <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
-                  {cartItems.map((item) => (
+                  {cartItems.map(item => (
                     <div key={item.cartId} className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-gray-100 rounded-md flex-shrink-0 relative overflow-hidden">
                         {item.imageUrl ? (
@@ -291,26 +305,33 @@ export default function CheckoutPage() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-gray-900 truncate">{item.productName}</h4>
+                        <h4 className="text-sm font-medium text-gray-900 truncate">
+                          {item.productName}
+                        </h4>
                         <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-base font-semibold text-gray-900">
-                          ${((item.subtotal || (item.productPrice || 0) * (item.quantity || 1))).toFixed(2)}
+                          $
+                          {(
+                            item.subtotal || (item.productPrice || 0) * (item.quantity || 1)
+                          ).toFixed(2)}
                         </p>
                       </div>
                     </div>
                   ))}
                 </div>
-                
+
                 <Separator className="my-4" />
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Subtotal</span>
-                    <span className="text-base font-semibold text-gray-900">${cartTotal.toFixed(2)}</span>
+                    <span className="text-base font-semibold text-gray-900">
+                      ${cartTotal.toFixed(2)}
+                    </span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Shipping</span>
                     <div className="flex items-center">
@@ -318,21 +339,21 @@ export default function CheckoutPage() {
                       <span className="text-base font-semibold text-[#acac49]">FREE</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Tax</span>
                     <span className="text-base font-semibold text-gray-900">$0.00</span>
                   </div>
-                  
+
                   <Separator className="my-4" />
-                  
+
                   <div className="flex justify-between text-lg font-semibold">
                     <span className="text-gray-900">Total</span>
                     <span className="text-[#acac49]">${cartTotal.toFixed(2)}</span>
                   </div>
                 </div>
 
-                <Button 
+                <Button
                   onClick={handleCheckout}
                   disabled={isProcessing}
                   className="w-full bg-[#acac49] hover:bg-[#96963f] text-white rounded-lg px-6 py-3 font-medium shadow-sm transition flex items-center justify-center gap-2"
@@ -350,7 +371,7 @@ export default function CheckoutPage() {
                     </>
                   )}
                 </Button>
-                
+
                 <div className="flex items-center justify-center mt-3 text-xs text-gray-500 gap-2">
                   <ShieldCheck className="w-4 h-4" />
                   Secure Checkout
@@ -361,5 +382,5 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

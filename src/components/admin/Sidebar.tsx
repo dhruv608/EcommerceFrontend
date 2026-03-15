@@ -1,43 +1,45 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { LayoutDashboard, Package, Layers, ChevronLeft, ChevronRight, LogOut, ShoppingCart } from "lucide-react";
-import { Button } from "../ui/button";
-import { useAdminAuth } from "@/context/AdminAuthContext";
-import { useRouter } from "next/navigation";
+import Link from 'next/link'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { useState } from 'react'
+import {
+  LayoutDashboard,
+  Package,
+  Layers,
+  ChevronLeft,
+  ChevronRight,
+  LogOut,
+  ShoppingCart,
+} from 'lucide-react'
+import { Button } from '../ui/button'
+import { useAdminAuth } from '@/context/AdminAuthContext'
+import { useRouter } from 'next/navigation'
 
 export default function Sidebar() {
-  const pathname = usePathname();
-  const [open, setOpen] = useState(true);
-  const { adminLogout } = useAdminAuth();
-  const router = useRouter();
+  const pathname = usePathname()
+  const [open, setOpen] = useState(true)
+  const { adminLogout } = useAdminAuth()
+  const router = useRouter()
 
   const linkClass = (path: string) =>
     `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition
-     ${
-       pathname === path
-         ? "bg-[#acac49]/15 text-[#acac49]"
-         : "text-[#555] hover:bg-[#f5f5ea]"
-     }`;
+     ${pathname === path ? 'bg-[#acac49]/15 text-[#acac49]' : 'text-[#555] hover:bg-[#f5f5ea]'}`
 
   const handleLogout = () => {
-    adminLogout();
-    router.push("/");
-  };
+    adminLogout()
+    router.push('/')
+  }
 
   return (
-    <aside
-      className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-[#eee] z-50"
-    >
+    <aside className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-[#eee] z-50">
       {/* Brand Header */}
       <div className="flex items-center justify-center px-6 py-5">
         <div className="flex items-center gap-2">
-          <Image 
-            src="/logo.svg" 
-            alt="Light Store Logo" 
+          <Image
+            src="/logo.svg"
+            alt="Light Store Logo"
             width={24}
             height={24}
             className="h-6 w-auto"
@@ -51,26 +53,17 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex flex-col gap-1 px-4">
-        <Link
-          href="/admin/products"
-          className={linkClass("/admin/products")}
-        >
+        <Link href="/admin/products" className={linkClass('/admin/products')}>
           <Package size={18} />
           <span>Products</span>
         </Link>
 
-        <Link
-          href="/admin/categories"
-          className={linkClass("/admin/categories")}
-        >
+        <Link href="/admin/categories" className={linkClass('/admin/categories')}>
           <Layers size={18} />
           <span>Categories</span>
         </Link>
 
-        <Link
-          href="/admin/orders"
-          className={linkClass("/admin/orders")}
-        >
+        <Link href="/admin/orders" className={linkClass('/admin/orders')}>
           <ShoppingCart size={18} />
           <span>Orders</span>
         </Link>
@@ -88,5 +81,5 @@ export default function Sidebar() {
         </Button>
       </div>
     </aside>
-  );
+  )
 }

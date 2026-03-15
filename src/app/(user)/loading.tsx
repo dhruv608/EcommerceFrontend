@@ -1,6 +1,10 @@
-"use client";
+'use client'
 
-import { ProductGridSkeleton, CategoryCardSkeleton, PageHeaderSkeleton } from "@/components/skeleton";
+import {
+  ProductGridSkeleton,
+  CategoryCardSkeleton,
+  PageHeaderSkeleton,
+} from '@/components/skeleton'
 
 export default function HomePageLoading() {
   return (
@@ -20,18 +24,22 @@ export default function HomePageLoading() {
 
           {/* Category Cards Grid */}
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {Array(6).fill(0).map((_, index) => (
-              <CategoryCardSkeleton key={index} />
-            ))}
+            {Array(6)
+              .fill(0)
+              .map((_, index) => (
+                <CategoryCardSkeleton key={index} />
+              ))}
           </div>
 
           {/* Mobile Category Cards */}
           <div className="md:hidden flex gap-4 overflow-x-auto px-4 pb-2">
-            {Array(6).fill(0).map((_, index) => (
-              <div key={index} className="min-w-[140px] h-36">
-                <CategoryCardSkeleton />
-              </div>
-            ))}
+            {Array(6)
+              .fill(0)
+              .map((_, index) => (
+                <div key={index} className="min-w-[140px] h-36">
+                  <CategoryCardSkeleton />
+                </div>
+              ))}
           </div>
         </div>
       </section>
@@ -56,5 +64,5 @@ export default function HomePageLoading() {
         </div>
       </section>
     </main>
-  );
+  )
 }

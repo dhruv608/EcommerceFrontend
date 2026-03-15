@@ -1,26 +1,27 @@
-"use client";
+'use client'
 
-import React, { useEffect, useState } from "react";
-import { Category, Product } from "@/lib/types";
-import api from "@/lib/api";
-import FilterSidebar from "@/components/products/FilterSidebar";
-import MobileFilter from "@/components/products/MobileFilter";
-import SearchBar from "@/components/products/SearchBar";
-import SortSelect from "@/components/products/SortSelect";
-import ProductCard from "@/components/products/ProductCard";
-import { Separator } from "@/components/ui/separator";
-import ProductPagination from "@/components/products/ProductPagination";
-import EmptyProductsState from "@/components/ui/EmptyProductsState";
-import { useFilterStore, useInitializeFilters } from "@/store/filterStore";
-import ClientOnly from "./ClientOnly";
-import { ProductGridSkeleton } from "@/components/skeleton";
+import React, { useEffect, useState } from 'react'
+import { Category, Product } from '@/lib/types'
+import api from '@/lib/api'
+import FilterSidebar from '@/components/products/FilterSidebar'
+import MobileFilter from '@/components/products/MobileFilter'
+import SearchBar from '@/components/products/SearchBar'
+import SortSelect from '@/components/products/SortSelect'
+import ProductCard from '@/components/products/ProductCard'
+import { Separator } from '@/components/ui/separator'
+import ProductPagination from '@/components/products/ProductPagination'
+import EmptyProductsState from '@/components/ui/EmptyProductsState'
+import { useFilterStore, useInitializeFilters } from '@/store/filterStore'
+import ClientOnly from './ClientOnly'
+import { logger } from '@/lib/logger'
+import { ProductGridSkeleton } from '@/components/skeleton'
 
 // ProductsClient component for handling interactive product filtering
 interface ProductsClientProps {
-  initialProductData: Product;
-  initialCategories: Category[];
-  initialCategoryName: string;
-  initialSearchParams: Record<string, string | string[] | undefined>;
+  initialProductData: Product
+  initialCategories: Category[]
+  initialCategoryName: string
+  initialSearchParams: Record<string, string | string[] | undefined>
 }
 
 export default function ProductsClient({
@@ -29,104 +30,116 @@ export default function ProductsClient({
   initialCategoryName,
   initialSearchParams,
 }: ProductsClientProps) {
-  const [productData, setProductData] = useState<Product>(initialProductData);
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
-  const [categoryName, setCategoryName] = useState<string>(initialCategoryName);
-  const [isLoading, setIsLoading] = useState(false);
-  
+  const [productData, setProductData] = useState<Product>(initialProductData)
+  const [categories, setCategories] = useState<Category[]>(initialCategories)
+  const [categoryName, setCategoryName] = useState<string>(initialCategoryName)
+  const [isLoading, setIsLoading] = useState(false)
+
   // Get filter state
-  const filterState = useFilterStore();
-  
+  const filterState = useFilterStore()
+
   // Initialize filter store from URL - this will read from URL and sync store
-  useInitializeFilters();
-  
+  useInitializeFilters()
+
   // Sync initial server state with client store if needed
   useEffect(() => {
     // Only sync if URL has categoryId but store doesn't (to handle hard refresh)
     if (initialSearchParams.categoryId && !filterState.categoryId) {
-      console.log("Syncing categoryId from server to store:", initialSearchParams.categoryId);
-      filterState.setCategoryId(initialSearchParams.categoryId as string);
+      console.log('Syncing categoryId from server to store:', initialSearchParams.categoryId)
+      filterState.setCategoryId(initialSearchParams.categoryId as string)
     }
-  }, [initialSearchParams.categoryId, filterState.categoryId, filterState.setCategoryId]);
-  
+  }, [initialSearchParams.categoryId, filterState.categoryId, filterState.setCategoryId])
+
   // Prevent unnecessary refetch on initial load
-  const [isInitialized, setIsInitialized] = useState(false);
-  
+  const [isInitialized, setIsInitialized] = useState(false)
+
   useEffect(() => {
-    setIsInitialized(true);
-  }, []);
-  
+    setIsInitialized(true)
+  }, [])
+
   // Debug: Log current state
   useEffect(() => {
-    console.log("ProductsClient - Initial searchParams:", initialSearchParams);
-    console.log("ProductsClient - Current store categoryId:", filterState.categoryId);
-    console.log("ProductsClient - Current categoryName:", categoryName);
-    console.log("ProductsClient - Is initialized:", isInitialized);
-  }, [initialSearchParams, filterState.categoryId, categoryName, isInitialized]);
+    logger.log('ProductsClient - Initial searchParams:', initialSearchParams)
+    logger.log('ProductsClient - Current store categoryId:', filterState.categoryId)
+    logger.log('ProductsClient - Current categoryName:', categoryName)
+    logger.log('ProductsClient - Is initialized:', isInitialized)
+  }, [initialSearchParams, filterState.categoryId, categoryName, isInitialized])
   const getApiParams = () => {
-    const params: Record<string, string | string[] | undefined> = {};
-    
-    if (filterState.categoryId) params.categoryId = filterState.categoryId;
-    if (filterState.search) params.search = filterState.search;
-    if (filterState.minPrice > 0) params.minPrice = filterState.minPrice.toString();
-    if (filterState.maxPrice < 5000) params.maxPrice = filterState.maxPrice.toString();
-    if (filterState.sortBy !== 'createdAt') params.sortBy = filterState.sortBy;
-    if (filterState.direction !== 'desc') params.direction = filterState.direction;
-    if (filterState.page > 0) params.page = filterState.page.toString();
-    if (filterState.isFeatured) params.isFeatured = "true";
-    
+    const params: Record<string, string | string[] | undefined> = {}
+
+    if (filterState.categoryId) params.categoryId = filterState.categoryId
+    if (filterState.search) params.search = filterState.search
+    if (filterState.minPrice > 0) params.minPrice = filterState.minPrice.toString()
+    if (filterState.maxPrice < 5000) params.maxPrice = filterState.maxPrice.toString()
+    if (filterState.sortBy !== 'createdAt') params.sortBy = filterState.sortBy
+    if (filterState.direction !== 'desc') params.direction = filterState.direction
+    if (filterState.page > 0) params.page = filterState.page.toString()
+    if (filterState.isFeatured) params.isFeatured = 'true'
+
     // Always filter for active products
-    params.isActive = "true";
-    params.size = "12";
-    
-    return params;
-  };
+    params.isActive = 'true'
+    params.size = '12'
+
+    return params
+  }
 
   // Fetch data function
   const fetchData = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const params = getApiParams();
-      console.log("Fetching products with params:", params);
-      
+      const params = getApiParams()
+      logger.log('Fetching products with params:', params)
+
       const [productResponse, categoriesResponse] = await Promise.all([
         api.get(`/products?${new URLSearchParams(params as any).toString()}`).then(res => res.data),
-        api.get("/categories?activeOnly=true").then(res => res.data),
-      ]);
+        api.get('/categories?activeOnly=true').then(res => res.data),
+      ])
 
-      setProductData(productResponse);
-      setCategories(categoriesResponse);
-      
+      setProductData(productResponse)
+      setCategories(categoriesResponse)
+
       // Update category name
-      const newCategoryName = categoriesResponse.find(
-        (c: Category) => c.id.toString() === (filterState.categoryId || "")
-      )?.name || "All Collection";
-      setCategoryName(newCategoryName);
+      const newCategoryName =
+        categoriesResponse.find((c: Category) => c.id.toString() === (filterState.categoryId || ''))
+          ?.name || 'All Collection'
+      setCategoryName(newCategoryName)
     } catch (error) {
-      console.error("Failed to fetch products:", error);
+      console.error('Failed to fetch products:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   // Initialize data on mount and when filters change (but not on initial load)
   useEffect(() => {
     if (isInitialized) {
-      fetchData();
+      fetchData()
     }
-  }, [isInitialized, filterState.categoryId, filterState.search, filterState.minPrice, filterState.maxPrice, filterState.sortBy, filterState.direction, filterState.page, filterState.isFeatured]);
+  }, [
+    isInitialized,
+    filterState.categoryId,
+    filterState.search,
+    filterState.minPrice,
+    filterState.maxPrice,
+    filterState.sortBy,
+    filterState.direction,
+    filterState.page,
+    filterState.isFeatured,
+  ])
 
   return (
     <>
       {/* Fixed Sidebar - Desktop Only */}
       <aside className="hidden md:block fixed left-0 top-[80px] h-[calc(100vh-80px)] w-64 overflow-y-auto overflow-x-hidden z-40">
         <div className="h-full px-2">
-          <ClientOnly fallback={<div className="w-full h-20 bg-gray-200 rounded-md animate-pulse mb-4" />}>
+          <ClientOnly
+            fallback={<div className="w-full h-20 bg-gray-200 rounded-md animate-pulse mb-4" />}
+          >
             <FilterSidebar categories={categories} totalProductCount={0} />
           </ClientOnly>
         </div>
       </aside>
-      
+
       {/* Main Content - Offset from Sidebar */}
       <main className="ml-0 md:ml-64 min-h-screen" suppressHydrationWarning={true}>
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -141,13 +154,19 @@ export default function ProductsClient({
               </p>
             </div>
             <div className="flex items-center gap-2 w-full md:w-auto">
-              <ClientOnly fallback={<div className="w-10 h-10 bg-gray-200 rounded-md animate-pulse" />}>
+              <ClientOnly
+                fallback={<div className="w-10 h-10 bg-gray-200 rounded-md animate-pulse" />}
+              >
                 <MobileFilter categories={categories} totalProductCount={0} />
               </ClientOnly>
-              <ClientOnly fallback={<div className="w-64 h-10 bg-gray-200 rounded-md animate-pulse" />}>
+              <ClientOnly
+                fallback={<div className="w-64 h-10 bg-gray-200 rounded-md animate-pulse" />}
+              >
                 <SearchBar />
               </ClientOnly>
-              <ClientOnly fallback={<div className="w-44 h-10 bg-gray-200 rounded-md animate-pulse" />}>
+              <ClientOnly
+                fallback={<div className="w-44 h-10 bg-gray-200 rounded-md animate-pulse" />}
+              >
                 <SortSelect />
               </ClientOnly>
             </div>
@@ -161,11 +180,7 @@ export default function ProductsClient({
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-4">
                 {productData.content.map((product, index) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    priority={index < 6}
-                  />
+                  <ProductCard key={product.id} product={product} priority={index < 6} />
                 ))}
               </div>
 
@@ -183,5 +198,5 @@ export default function ProductsClient({
         </div>
       </main>
     </>
-  );
+  )
 }

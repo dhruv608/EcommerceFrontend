@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import api from "@/lib/api";
-import { Button } from "@/components/ui/button";
+import api from '@/lib/api'
+import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogContent,
@@ -11,34 +11,32 @@ import {
   AlertDialogFooter,
   AlertDialogTrigger,
   AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
-import axios from "axios";
+} from '@/components/ui/alert-dialog'
+import { toast } from 'sonner'
+import { Trash2 } from 'lucide-react'
+import axios from 'axios'
 
 export default function DeleteCategoryDialog({
   categoryId,
   categoryName,
   onSuccess,
 }: {
-  categoryId: number;
-  categoryName: string;
-  onSuccess: () => void;
+  categoryId: number
+  categoryName: string
+  onSuccess: () => void
 }) {
   async function handleDelete() {
     try {
-      await api.delete(`/categories/${categoryId}`);
-      toast.success("Category deleted");
-      onSuccess();
+      await api.delete(`/categories/${categoryId}`)
+      toast.success('Category deleted')
+      onSuccess()
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {
-        toast.error(
-          `${categoryName} has some products. Delete products first!`
-        );
-        return;
+        toast.error(`${categoryName} has some products. Delete products first!`)
+        return
       }
 
-      toast.error("Failed to delete category");
+      toast.error('Failed to delete category')
     }
   }
 
@@ -54,8 +52,7 @@ export default function DeleteCategoryDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Category</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete <b>{categoryName}</b>?  
-            This action cannot be undone.
+            Are you sure you want to delete <b>{categoryName}</b>? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -70,5 +67,5 @@ export default function DeleteCategoryDialog({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

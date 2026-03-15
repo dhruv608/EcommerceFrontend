@@ -1,44 +1,46 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import { ProductContent } from "@/lib/types";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Heart, Truck, ShieldCheck } from "lucide-react";
-import { toast } from "sonner";
-import { useAuth } from "@/context/AuthContext";
-import { useAuthModal } from "@/context/AuthModalContext";
-import SmartAddToCart from "./SmartAddToCart";
+import { useState, useEffect } from 'react'
+import { ProductContent } from '@/lib/types'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Heart, Truck, ShieldCheck } from 'lucide-react'
+import { toast } from 'sonner'
+import { useAuth } from '@/context/AuthContext'
+import { useAuthModal } from '@/context/AuthModalContext'
+import SmartAddToCart from './SmartAddToCart'
 
 export default function UserProductInfo({ product }: { product: ProductContent }) {
-  const { isLoggedIn } = useAuth();
-  const { openAuthModal } = useAuthModal();
-  
+  const { isLoggedIn } = useAuth()
+  const { openAuthModal } = useAuthModal()
+
   // Check if product is in cart
-  const [isInCart, setIsInCart] = useState(false);
-  
+  const [isInCart, setIsInCart] = useState(false)
+
   // Fake Discount Calculation (Sirf show off ke liye)
-  const originalPrice = product.price * 1.25; 
+  const originalPrice = product.price * 1.25
 
   return (
     <div className="flex flex-col gap-6">
-      
       {/* 1. Header Section */}
       <div>
         <div className="flex items-center justify-between mb-3">
-           <Badge variant="outline" className="uppercase tracking-widest text-xs font-bold border-black/20">
-             {product.category?.name || "Collection"}
-           </Badge>
-           
-           {/* Stock Status */}
-           {product.stock > 0 ? (
-             <span className="flex items-center gap-1.5 text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">
-               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"/> In Stock
-             </span>
-           ) : (
-             <Badge variant="destructive">Out of Stock</Badge>
-           )}
+          <Badge
+            variant="outline"
+            className="uppercase tracking-widest text-xs font-bold border-black/20"
+          >
+            {product.category?.name || 'Collection'}
+          </Badge>
+
+          {/* Stock Status */}
+          {product.stock > 0 ? (
+            <span className="flex items-center gap-1.5 text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> In Stock
+            </span>
+          ) : (
+            <Badge variant="destructive">Out of Stock</Badge>
+          )}
         </div>
 
         <h1 className="text-3xl md:text-5xl font-black text-gray-900 leading-tight tracking-tight">
@@ -80,8 +82,8 @@ export default function UserProductInfo({ product }: { product: ProductContent }
         ) : (
           <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
             <p className="text-gray-900 mb-4 font-medium">Sign in to add this item to your cart</p>
-            <Button 
-              onClick={() => openAuthModal("login")} 
+            <Button
+              onClick={() => openAuthModal('login')}
               className="bg-[#acac49] hover:bg-[#9a9a42] text-white rounded-lg px-6 py-3 font-medium transition-all duration-200"
             >
               Sign In to Continue
@@ -111,7 +113,6 @@ export default function UserProductInfo({ product }: { product: ProductContent }
           </div>
         </div>
       </div>
-
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   AlertDialog,
@@ -10,31 +10,27 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog'
 
-import { toast } from "sonner";
-import api from "@/lib/api";
+import { toast } from 'sonner'
+import api from '@/lib/api'
 
 interface Props {
-  productId: number;
-  imageUrl: string;
-  onSuccess: () => void;
+  productId: number
+  imageUrl: string
+  onSuccess: () => void
 }
 
-export default function DeleteImageDialog({
-  productId,
-  imageUrl,
-  onSuccess,
-}: Props) {
+export default function DeleteImageDialog({ productId, imageUrl, onSuccess }: Props) {
   async function handleDelete() {
     try {
       await api.delete(`/products/${productId}/images`, {
         params: { imageUrl },
-      });
-      toast.success("Image deleted");
-      onSuccess();
+      })
+      toast.success('Image deleted')
+      onSuccess()
     } catch {
-      toast.error("Failed to delete image");
+      toast.error('Failed to delete image')
     }
   }
 
@@ -51,9 +47,7 @@ export default function DeleteImageDialog({
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            Delete this image?
-          </AlertDialogTitle>
+          <AlertDialogTitle>Delete this image?</AlertDialogTitle>
           <AlertDialogDescription>
             This image will be permanently removed from the product.
           </AlertDialogDescription>
@@ -61,14 +55,11 @@ export default function DeleteImageDialog({
 
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            className="bg-red-600 hover:bg-red-700"
-            onClick={handleDelete}
-          >
+          <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={handleDelete}>
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

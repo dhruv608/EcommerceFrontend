@@ -1,42 +1,42 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import Image from "next/image";
-import api from "@/lib/api";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import Image from 'next/image'
+import api from '@/lib/api'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 export default function RegisterPage() {
-  const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const router = useRouter()
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
 
   async function handleRegister() {
     if (!name || !email || !password) {
-      toast.error("All fields required");
-      return;
+      toast.error('All fields required')
+      return
     }
 
     try {
-      setLoading(true);
+      setLoading(true)
 
-      await api.post("/auth/register", {
+      await api.post('/auth/register', {
         name,
         email,
         password,
-      });
+      })
 
-      toast.success("Account created. Please login.");
-      router.push("/auth/login");
+      toast.success('Account created. Please login.')
+      router.push('/auth/login')
     } catch (err) {
-      toast.error("Registration failed");
+      toast.error('Registration failed')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -45,9 +45,9 @@ export default function RegisterPage() {
       <div className="w-full max-w-md bg-white p-6 rounded-lg border space-y-4">
         {/* Logo and Brand */}
         <div className="flex flex-col items-center space-y-4">
-          <Image 
-            src="/logo.svg" 
-            alt="Light Store Logo" 
+          <Image
+            src="/logo.svg"
+            alt="Light Store Logo"
             width={32}
             height={32}
             className="h-8 w-auto"
@@ -61,11 +61,7 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <Input
-          placeholder="Full Name"
-          value={name}
-          onChange={e => setName(e.target.value)}
-        />
+        <Input placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} />
 
         <Input
           placeholder="Email"
@@ -86,19 +82,16 @@ export default function RegisterPage() {
           onClick={handleRegister}
           disabled={loading}
         >
-          {loading ? "Creating..." : "Create Account"}
+          {loading ? 'Creating...' : 'Create Account'}
         </Button>
 
         <p className="text-sm text-center text-gray-500">
-          Already have an account?{" "}
-          <Link
-            href="/auth/login"
-            className="text-[#acac49] font-medium"
-          >
+          Already have an account?{' '}
+          <Link href="/auth/login" className="text-[#acac49] font-medium">
             Login
           </Link>
         </p>
       </div>
     </div>
-  );
+  )
 }

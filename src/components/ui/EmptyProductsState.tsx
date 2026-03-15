@@ -1,9 +1,9 @@
-"use client";
+'use client'
 
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 
 interface EmptyProductsStateProps {
-  clearFilters?: () => void;
+  clearFilters?: () => void
 }
 
 export default function EmptyProductsState({ clearFilters }: EmptyProductsStateProps) {
@@ -15,16 +15,14 @@ export default function EmptyProductsState({ clearFilters }: EmptyProductsStateP
         autoplay
         className="mx-auto w-[220px] h-[220px] md:w-[320px] md:h-[320px]"
       />
-      
+
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold text-gray-800">
-          No products found
-        </h3>
-        
+        <h3 className="text-lg font-semibold text-gray-800">No products found</h3>
+
         <p className="text-sm text-gray-500">
           Try adjusting your filters or search to find products.
         </p>
-        
+
         {clearFilters && (
           <button
             onClick={clearFilters}
@@ -35,5 +33,5 @@ export default function EmptyProductsState({ clearFilters }: EmptyProductsStateP
         )}
       </div>
     </div>
-  );
+  )
 }

@@ -1,29 +1,29 @@
-"use client";
+'use client'
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from 'react'
 
 interface AuthModalContextType {
-  isOpen: boolean;
-  activeTab: "login" | "register";
-  openAuthModal: (tab?: "login" | "register") => void;
-  closeAuthModal: () => void;
-  setActiveTab: (tab: "login" | "register") => void;
+  isOpen: boolean
+  activeTab: 'login' | 'register'
+  openAuthModal: (tab?: 'login' | 'register') => void
+  closeAuthModal: () => void
+  setActiveTab: (tab: 'login' | 'register') => void
 }
 
-const AuthModalContext = createContext<AuthModalContextType | undefined>(undefined);
+const AuthModalContext = createContext<AuthModalContextType | undefined>(undefined)
 
 export function AuthModalProvider({ children }: { children: ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<'login' | 'register'>('login')
 
-  const openAuthModal = (tab: "login" | "register" = "login") => {
-    setActiveTab(tab);
-    setIsOpen(true);
-  };
+  const openAuthModal = (tab: 'login' | 'register' = 'login') => {
+    setActiveTab(tab)
+    setIsOpen(true)
+  }
 
   const closeAuthModal = () => {
-    setIsOpen(false);
-  };
+    setIsOpen(false)
+  }
 
   return (
     <AuthModalContext.Provider
@@ -37,13 +37,13 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
     >
       {children}
     </AuthModalContext.Provider>
-  );
+  )
 }
 
 export function useAuthModal() {
-  const context = useContext(AuthModalContext);
+  const context = useContext(AuthModalContext)
   if (context === undefined) {
-    throw new Error("useAuthModal must be used within an AuthModalProvider");
+    throw new Error('useAuthModal must be used within an AuthModalProvider')
   }
-  return context;
+  return context
 }

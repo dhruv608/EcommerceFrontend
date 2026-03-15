@@ -1,95 +1,94 @@
-"use client";
-import { toast } from "sonner"
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner"
-import ToggleSwitch from "@/components/admin/ToggleSwitch";
+'use client'
+import { toast } from 'sonner'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
+import ToggleSwitch from '@/components/admin/ToggleSwitch'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import Link from "next/link";
-import { Category, ProductForm } from "@/lib/types";
-import { useEffect, useState } from "react";
-import api from "@/lib/api";
-import { useRouter } from "next/navigation";
-import { getCategories } from "@/lib/getCategories";
-
+} from '@/components/ui/select'
+import Link from 'next/link'
+import { Category, ProductForm } from '@/lib/types'
+import { useEffect, useState } from 'react'
+import api from '@/lib/api'
+import { useRouter } from 'next/navigation'
+import { getCategories } from '@/lib/getCategories'
 
 const initialProduct: ProductForm = {
-  name: "",
-  description: "",
-  price: "",
-  stock: "",
-  categoryId: "",
+  name: '',
+  description: '',
+  price: '',
+  stock: '',
+  categoryId: '',
   isActive: true,
   isFeatured: false,
-};
+}
 
 export default function AddProductPage() {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>([])
 
-  const router = useRouter();
-  const [product, setProduct] = useState<ProductForm>(initialProduct);
-  const [images, setImages] = useState<File[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter()
+  const [product, setProduct] = useState<ProductForm>(initialProduct)
+  const [images, setImages] = useState<File[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Auto-uncheck featured when product is deactivated
   const handleActiveChange = (isActive: boolean) => {
-    const newProduct = { ...product, isActive };
+    const newProduct = { ...product, isActive }
     // If deactivating, also uncheck featured
     if (!isActive) {
-      newProduct.isFeatured = false;
+      newProduct.isFeatured = false
     }
-    setProduct(newProduct);
-  };
+    setProduct(newProduct)
+  }
 
   // Prevent featuring if product is not active
   const handleFeaturedChange = (isFeatured: boolean) => {
     if (isFeatured && !product.isActive) {
-      toast.error("Product must be active to be featured");
-      return;
+      toast.error('Product must be active to be featured')
+      return
     }
-    setProduct({ ...product, isFeatured });
-  };
+    setProduct({ ...product, isFeatured })
+  }
 
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const data = await getCategories();
-        setCategories(data);
+        const data = await getCategories()
+        setCategories(data)
       } catch (err) {
-        toast.error("Failed to load categories");
+        toast.error('Failed to load categories')
       }
     }
 
-    fetchCategories();
-  }, []);
+    fetchCategories()
+  }, [])
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setProduct(prev => ({
       ...prev,
       [name]: value,
-    }));
+    }))
   }
 
   async function handleSubmit() {
-    if (isSubmitting) return;
-    const price = Number(product.price);
-    const stock = Number(product.stock);
+    if (isSubmitting) return
+    const price = Number(product.price)
+    const stock = Number(product.stock)
 
     if (!product.name || !product.categoryId) {
-      toast.error("Please fill required fields");
-      return;
+      toast.error('Please fill required fields')
+      return
     }
 
     if (isNaN(price) || isNaN(stock)) {
-      toast.error("Price & stock must be numbers");
-      return;
+      toast.error('Price & stock must be numbers')
+      return
     }
     try {
       setIsSubmitting(true)
@@ -104,18 +103,18 @@ export default function AddProductPage() {
           id: Number(product.categoryId),
         },
       }
-      const formData = new FormData();
-      formData.append("product", JSON.stringify(payload));
+      const formData = new FormData()
+      formData.append('product', JSON.stringify(payload))
 
-      images.forEach((img) => {
-        formData.append("images", img);
-      });
-      await api.post("/products", formData);
-      toast.success("Product created successfully");
+      images.forEach(img => {
+        formData.append('images', img)
+      })
+      await api.post('/products', formData)
+      toast.success('Product created successfully')
 
-      router.push("/admin/products");
+      router.push('/admin/products')
     } catch (error) {
-      toast.error("Failed to add product")
+      toast.error('Failed to add product')
     }
   }
 
@@ -125,27 +124,34 @@ export default function AddProductPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Add New Product</h1>
         <div className="flex gap-2">
-          <Link href={"/admin/products"}>
-            <Button variant="outline" className="border border-gray-300 hover:bg-gray-100 rounded-lg px-5 py-2">Discard</Button>
+          <Link href={'/admin/products'}>
+            <Button
+              variant="outline"
+              className="border border-gray-300 hover:bg-gray-100 rounded-lg px-5 py-2"
+            >
+              Discard
+            </Button>
           </Link>
-          <Button className="bg-[#ACAC49] hover:bg-[#9a9a42] text-white rounded-lg px-5 py-2" onClick={handleSubmit}
+          <Button
+            className="bg-[#ACAC49] hover:bg-[#9a9a42] text-white rounded-lg px-5 py-2"
+            onClick={handleSubmit}
             disabled={isSubmitting}
           >
-            {isSubmitting ? <Spinner /> : ""}
-            {isSubmitting ? "Adding Product..." : "Save Product"}
+            {isSubmitting ? <Spinner /> : ''}
+            {isSubmitting ? 'Adding Product...' : 'Save Product'}
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-6 overflow-visible">
-
         {/* RIGHT SIDE */}
         <div className="col-span-1 space-y-6 overflow-visible relative z-40">
           {/* General Info */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
             <h2 className="font-medium">General Information</h2>
 
-            <Input placeholder="Product Name"
+            <Input
+              placeholder="Product Name"
               value={product.name}
               name="name"
               required
@@ -163,7 +169,6 @@ export default function AddProductPage() {
             />
           </div>
 
-
           {/* Media */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
             <h2 className="font-medium">Media</h2>
@@ -177,9 +182,9 @@ export default function AddProductPage() {
               type="file"
               multiple
               accept="image/*"
-              onChange={(e) => {
+              onChange={e => {
                 if (e.target.files) {
-                  setImages(Array.from(e.target.files));
+                  setImages(Array.from(e.target.files))
                 }
               }}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]"
@@ -188,10 +193,7 @@ export default function AddProductPage() {
             {images.length > 0 && (
               <div className="grid grid-cols-4 gap-3">
                 {images.map((img, index) => (
-                  <div
-                    key={index}
-                    className="relative border rounded-lg overflow-hidden"
-                  >
+                  <div key={index} className="relative border rounded-lg overflow-hidden">
                     <img
                       src={URL.createObjectURL(img)}
                       alt="preview"
@@ -202,9 +204,7 @@ export default function AddProductPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        setImages(prev =>
-                          prev.filter((_, i) => i !== index)
-                        );
+                        setImages(prev => prev.filter((_, i) => i !== index))
                       }}
                       className="absolute top-1 right-1 bg-black/60 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs hover:bg-black"
                     >
@@ -214,18 +214,22 @@ export default function AddProductPage() {
                 ))}
               </div>
             )}
-
           </div>
 
           {/* Pricing */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
             <h2 className="font-medium">Pricing</h2>
 
-            <Input type="text" placeholder="Price (₹)" value={product.price} name="price" onChange={handleChange} className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]" />
+            <Input
+              type="text"
+              placeholder="Price (₹)"
+              value={product.price}
+              name="price"
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49]"
+            />
           </div>
-
         </div>
-
 
         {/* RIGHT SIDE */}
         <div className="space-y-6">
@@ -235,10 +239,7 @@ export default function AddProductPage() {
 
             <div className="flex items-center justify-between py-2">
               <span>Active</span>
-              <ToggleSwitch
-                checked={product.isActive}
-                onChange={handleActiveChange}
-              />
+              <ToggleSwitch checked={product.isActive} onChange={handleActiveChange} />
             </div>
 
             <div className="flex items-center justify-between py-2">
@@ -250,17 +251,18 @@ export default function AddProductPage() {
                   disabled={!product.isActive}
                 />
                 {!product.isActive && (
-                  <div 
+                  <div
                     className="absolute inset-0 bg-gray-100/50 rounded-full cursor-not-allowed"
                     title="Product must be active to be featured"
                   />
                 )}
               </div>
             </div>
-            
+
             {!product.isActive && product.isFeatured && (
               <div className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg p-2">
-                ⚠️ Inactive products cannot be featured. The featured status will be automatically removed when you save.
+                ⚠️ Inactive products cannot be featured. The featured status will be automatically
+                removed when you save.
               </div>
             )}
           </div>
@@ -270,21 +272,17 @@ export default function AddProductPage() {
             <h2 className="font-medium">Category</h2>
 
             <div className="relative">
-              <Select
-                onValueChange={(val) =>
-                  setProduct(prev => ({ ...prev, categoryId: val }))
-                }
-              >
+              <Select onValueChange={val => setProduct(prev => ({ ...prev, categoryId: val }))}>
                 <SelectTrigger className="w-full border-gray-300 bg-white hover:border-gray-400 focus:border-[#acac49] focus:ring-[#acac49]/20">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
-                <SelectContent 
+                <SelectContent
                   className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50"
                   position="popper"
                   side="bottom"
                   align="start"
                 >
-                  {categories.map((category) => (
+                  {categories.map(category => (
                     <SelectItem
                       key={category.id}
                       value={String(category.id)}
@@ -301,20 +299,20 @@ export default function AddProductPage() {
           {/* Stock */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-4">
             <h2 className="font-medium">Stock</h2>
-            
+
             <div className="relative">
-              <Input 
-                type="number" 
-                placeholder="Stock" 
-                value={product.stock} 
-                name="stock" 
-                onChange={handleChange} 
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49] hover:border-gray-400 transition-colors" 
+              <Input
+                type="number"
+                placeholder="Stock"
+                value={product.stock}
+                name="stock"
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#ACAC49] focus:border-[#ACAC49] hover:border-gray-400 transition-colors"
               />
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

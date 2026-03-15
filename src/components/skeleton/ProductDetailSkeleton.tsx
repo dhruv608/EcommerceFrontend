@@ -1,5 +1,5 @@
-import React from 'react';
-import Skeleton from './Skeleton';
+import React from 'react'
+import Skeleton from './Skeleton'
 
 export const ProductDetailSkeleton: React.FC = () => {
   return (
@@ -17,14 +17,16 @@ export const ProductDetailSkeleton: React.FC = () => {
           <div className="aspect-square overflow-hidden rounded-xl">
             <Skeleton className="w-full h-full" />
           </div>
-          
+
           {/* Thumbnail Images */}
           <div className="flex gap-2">
-            {Array(4).fill(0).map((_, i) => (
-              <div key={i} className="w-20 h-20 overflow-hidden rounded-lg">
-                <Skeleton className="w-full h-full" />
-              </div>
-            ))}
+            {Array(4)
+              .fill(0)
+              .map((_, i) => (
+                <div key={i} className="w-20 h-20 overflow-hidden rounded-lg">
+                  <Skeleton className="w-full h-full" />
+                </div>
+              ))}
           </div>
         </div>
 
@@ -32,13 +34,13 @@ export const ProductDetailSkeleton: React.FC = () => {
         <div className="space-y-6">
           {/* Title */}
           <Skeleton className="h-10 w-full" />
-          
+
           {/* Price */}
           <div className="space-y-2">
             <Skeleton className="h-4 w-16" />
             <Skeleton className="h-8 w-32" />
           </div>
-          
+
           {/* Description */}
           <div className="space-y-2">
             <Skeleton className="h-4 w-24" />
@@ -46,13 +48,13 @@ export const ProductDetailSkeleton: React.FC = () => {
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-3/4" />
           </div>
-          
+
           {/* Actions */}
           <div className="space-y-4">
             <Skeleton className="h-14 w-full rounded-xl" />
             <Skeleton className="h-12 w-full rounded-xl" />
           </div>
-          
+
           {/* Additional Info */}
           <div className="space-y-3 pt-6 border-t">
             <Skeleton className="h-4 w-40" />
@@ -62,7 +64,7 @@ export const ProductDetailSkeleton: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductDetailSkeleton;
+export default ProductDetailSkeleton

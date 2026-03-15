@@ -1,46 +1,49 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { Search } from "lucide-react";
-import { useFilterStore } from "@/store/filterStore";
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { Search } from 'lucide-react'
+import { useFilterStore } from '@/store/filterStore'
 
 export default function SearchBar() {
-  const { search, setSearch } = useFilterStore();
-  const [localSearch, setLocalSearch] = useState(search || "");
-  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const { search, setSearch } = useFilterStore()
+  const [localSearch, setLocalSearch] = useState(search || '')
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   // Sync local search with global store
   useEffect(() => {
-    setLocalSearch(search || "");
-  }, [search]);
+    setLocalSearch(search || '')
+  }, [search])
 
-  const handleSearch = useCallback((value: string) => {
-    // Clear existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    
-    // Set new timeout
-    timeoutRef.current = setTimeout(() => {
-      setSearch(value.trim() || null);
-    }, 300);
-  }, [setSearch]);
+  const handleSearch = useCallback(
+    (value: string) => {
+      // Clear existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+
+      // Set new timeout
+      timeoutRef.current = setTimeout(() => {
+        setSearch(value.trim() || null)
+      }, 300)
+    },
+    [setSearch]
+  )
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setLocalSearch(value);
-    
+    const value = e.target.value
+    setLocalSearch(value)
+
     // Update search with debounce
-    handleSearch(value);
-  };
+    handleSearch(value)
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const value = (e.target as HTMLInputElement).value;
-      setSearch(value.trim() || null);
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      const value = (e.target as HTMLInputElement).value
+      setSearch(value.trim() || null)
     }
-  };
+  }
 
   return (
     <div className="relative w-full md:w-auto">
@@ -56,5 +59,5 @@ export default function SearchBar() {
         />
       </div>
     </div>
-  );
+  )
 }

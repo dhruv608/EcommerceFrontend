@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 export default function Metadata({ product }: any) {
   return (
@@ -15,5 +15,5 @@ export default function Metadata({ product }: any) {
         <p>{new Date(product.updatedAt).toDateString()}</p>
       </div>
     </div>
-  );
+  )
 }

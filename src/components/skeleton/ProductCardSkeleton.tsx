@@ -1,13 +1,16 @@
-import React from 'react';
-import Skeleton from './Skeleton';
+import React from 'react'
+import Skeleton from './Skeleton'
 
 export const ProductCardSkeleton: React.FC = () => {
   return (
-    <div className="group relative bg-white rounded-[2rem] overflow-hidden shadow-sm">
+    <div
+      data-testid="product-card-skeleton"
+      className="group relative bg-white rounded-[2rem] overflow-hidden shadow-sm"
+    >
       {/* Image Area */}
       <div className="relative aspect-3/4 w-full overflow-hidden">
         <Skeleton className="w-full h-full" />
-        
+
         {/* Top Badges */}
         <div className="absolute top-4 left-4">
           <Skeleton className="h-6 w-16 rounded-full" />
@@ -34,7 +37,7 @@ export const ProductCardSkeleton: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductCardSkeleton;
+export default ProductCardSkeleton

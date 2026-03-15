@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState } from 'react'
+import Image from 'next/image'
 
 export default function ProductGallery({ images }: { images: string[] }) {
-  const [active, setActive] = useState(images[0]);
+  const [active, setActive] = useState(images[0])
 
   return (
     <div className="bg-white p-6">
@@ -29,11 +29,7 @@ export default function ProductGallery({ images }: { images: string[] }) {
               key={i}
               onClick={() => setActive(img)}
               className={`relative h-20 w-20 rounded-lg overflow-hidden cursor-pointer border-2 transition flex-shrink-0
-                ${
-                  active === img
-                    ? "border-[#acac49]"
-                    : "border-gray-200"
-                }`}
+                ${active === img ? 'border-[#acac49]' : 'border-gray-200'}`}
             >
               <Image
                 src={img}
@@ -58,8 +54,8 @@ export default function ProductGallery({ images }: { images: string[] }) {
               className={`relative h-20 w-20 rounded-md cursor-pointer border transition
                 ${
                   active === img
-                    ? "border-[#acac49] ring-2 ring-[#acac49]/20"
-                    : "border-gray-200 hover:border-gray-400"
+                    ? 'border-[#acac49] ring-2 ring-[#acac49]/20'
+                    : 'border-gray-200 hover:border-gray-400'
                 }`}
             >
               <Image
@@ -86,5 +82,5 @@ export default function ProductGallery({ images }: { images: string[] }) {
         </div>
       </div>
     </div>
-  );
+  )
 }

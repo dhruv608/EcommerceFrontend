@@ -1,16 +1,16 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import Image from "next/image";
-import { ArrowRight, CheckCircle, Star, ShoppingBag } from "lucide-react";
-import CategorySection from "@/components/CategorySection";
+import Link from 'next/link'
+import Image from 'next/image'
+import { ArrowRight, CheckCircle, Star, ShoppingBag } from 'lucide-react'
+import CategorySection from '@/components/CategorySection'
 
 // Mock categories data for About page
 const mockCategories = [
-  { id: 1, name: "Mens", description: "Stylish menswear collection" },
-  { id: 2, name: "Womens", description: "Elegant womens fashion" },
-  { id: 7, name: "Bags", description: "Premium bags and accessories" }
-];
+  { id: 1, name: 'Mens', description: 'Stylish menswear collection' },
+  { id: 2, name: 'Womens', description: 'Elegant womens fashion' },
+  { id: 7, name: 'Bags', description: 'Premium bags and accessories' },
+]
 
 export default function AboutPage() {
   return (
@@ -22,9 +22,9 @@ export default function AboutPage() {
           <div className="flex items-center justify-center gap-4 mb-8">
             <div className="relative">
               <div className="absolute inset-0 bg-[#ACAC49]/20 rounded-full blur-xl"></div>
-              <Image 
-                src="/logo.svg" 
-                alt="Light Store Logo" 
+              <Image
+                src="/logo.svg"
+                alt="Light Store Logo"
                 width={64}
                 height={64}
                 className="relative h-16 w-auto transition-transform hover:scale-110"
@@ -34,18 +34,19 @@ export default function AboutPage() {
               About Light <span className="text-[#ACAC49]">Store</span>
             </h1>
           </div>
-          
+
           {/* Tagline */}
           <p className="text-2xl md:text-3xl text-gray-700 font-semibold mb-6">
             Modern fashion for everyday confidence.
           </p>
-          
+
           {/* Description */}
           <p className="text-gray-600 text-xl max-w-4xl mx-auto leading-relaxed">
-            Light Store is your destination for contemporary fashion that combines style, comfort, and quality. 
-            We curate collections that empower you to express yourself through clothing that feels as good as it looks.
+            Light Store is your destination for contemporary fashion that combines style, comfort,
+            and quality. We curate collections that empower you to express yourself through clothing
+            that feels as good as it looks.
           </p>
-          
+
           {/* Decorative Elements */}
           <div className="mt-12 flex items-center justify-center gap-8">
             <div className="h-px bg-gradient-to-r from-transparent to-[#ACAC49] w-20"></div>
@@ -67,20 +68,23 @@ export default function AboutPage() {
                 </h2>
                 <div className="h-1 w-20 bg-[#ACAC49] rounded-full"></div>
               </div>
-              
+
               <div className="space-y-6 text-lg text-gray-600 leading-relaxed">
                 <p>
-                  Light Store began with a simple vision: to create a space where fashion meets accessibility without compromising on quality or style.
+                  Light Store began with a simple vision: to create a space where fashion meets
+                  accessibility without compromising on quality or style.
                 </p>
                 <p>
-                  We believe that great clothing should be available to everyone. Our team carefully selects each piece in our collection, 
-                  ensuring it meets our standards for comfort, durability, and contemporary design.
+                  We believe that great clothing should be available to everyone. Our team carefully
+                  selects each piece in our collection, ensuring it meets our standards for comfort,
+                  durability, and contemporary design.
                 </p>
                 <p>
-                  From everyday essentials to statement pieces, Light Store is here to make your fashion journey effortless and enjoyable.
+                  From everyday essentials to statement pieces, Light Store is here to make your
+                  fashion journey effortless and enjoyable.
                 </p>
               </div>
-              
+
               {/* Brand Stats */}
               <div className="grid grid-cols-3 gap-6 pt-8">
                 <div className="text-center">
@@ -97,7 +101,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Right Side - Image */}
             <div className="relative">
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
@@ -109,7 +113,7 @@ export default function AboutPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
               </div>
-              
+
               {/* Floating Card */}
               <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-xl p-4 border border-gray-100">
                 <div className="flex items-center gap-3">
@@ -136,21 +140,21 @@ export default function AboutPage() {
             </h2>
             <div className="h-1 w-24 bg-[#ACAC49] rounded-full mx-auto mb-8"></div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We're committed to providing you with the best shopping experience and products that exceed your expectations.
+              We're committed to providing you with the best shopping experience and products that
+              exceed your expectations.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {/* Quality Materials */}
             <div className="group bg-white rounded-2xl border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-500 p-8 hover:-translate-y-2">
               <div className="w-16 h-16 bg-[#ACAC49]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#ACAC49]/20 transition-colors">
                 <CheckCircle className="w-8 h-8 text-[#ACAC49]" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Quality Materials
-              </h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Quality Materials</h3>
               <p className="text-gray-600 leading-relaxed text-lg">
-                We source premium fabrics and materials to ensure every piece meets the highest standards of comfort and durability.
+                We source premium fabrics and materials to ensure every piece meets the highest
+                standards of comfort and durability.
               </p>
             </div>
 
@@ -159,11 +163,10 @@ export default function AboutPage() {
               <div className="w-16 h-16 bg-[#ACAC49]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#ACAC49]/20 transition-colors">
                 <Star className="w-8 h-8 text-[#ACAC49]" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Modern Designs
-              </h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Modern Designs</h3>
               <p className="text-gray-600 leading-relaxed text-lg">
-                Our collections feature contemporary styles that keep you on-trend while maintaining timeless appeal for lasting wardrobe value.
+                Our collections feature contemporary styles that keep you on-trend while maintaining
+                timeless appeal for lasting wardrobe value.
               </p>
             </div>
 
@@ -172,11 +175,10 @@ export default function AboutPage() {
               <div className="w-16 h-16 bg-[#ACAC49]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#ACAC49]/20 transition-colors">
                 <ShoppingBag className="w-8 h-8 text-[#ACAC49]" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Comfort First
-              </h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Comfort First</h3>
               <p className="text-gray-600 leading-relaxed text-lg">
-                Every piece is designed with your comfort in mind, ensuring you look great and feel confident throughout your day.
+                Every piece is designed with your comfort in mind, ensuring you look great and feel
+                confident throughout your day.
               </p>
             </div>
           </div>
@@ -195,8 +197,8 @@ export default function AboutPage() {
             </h2>
             <div className="h-1 w-24 bg-[#ACAC49] rounded-full mx-auto mb-8"></div>
             <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-              Explore our latest collection of stylish clothing designed for everyday life.
-              Discover pieces that match your personality and elevate your wardrobe.
+              Explore our latest collection of stylish clothing designed for everyday life. Discover
+              pieces that match your personality and elevate your wardrobe.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
@@ -218,5 +220,5 @@ export default function AboutPage() {
         </div>
       </section>
     </main>
-  );
+  )
 }

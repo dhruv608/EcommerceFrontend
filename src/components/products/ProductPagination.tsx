@@ -1,19 +1,19 @@
-"use client";
+'use client'
 
-import LightStorePagination from "@/components/ui/LightStorePagination";
-import { useFilterStore } from "@/store/filterStore";
+import LightStorePagination from '@/components/ui/LightStorePagination'
+import { useFilterStore } from '@/store/filterStore'
 
 interface ProductPaginationProps {
-  currentPage: number;
-  totalPages: number;
+  currentPage: number
+  totalPages: number
 }
 
 export default function ProductPagination({ currentPage, totalPages }: ProductPaginationProps) {
-  const { setPage } = useFilterStore();
+  const { setPage } = useFilterStore()
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage - 1); // Convert to 0-based for API
-  };
+    setPage(newPage - 1) // Convert to 0-based for API
+  }
 
   return (
     <LightStorePagination
@@ -21,5 +21,5 @@ export default function ProductPagination({ currentPage, totalPages }: ProductPa
       totalPages={totalPages}
       onPageChange={handlePageChange}
     />
-  );
+  )
 }

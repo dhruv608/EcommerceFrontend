@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   AlertDialog,
@@ -10,39 +10,39 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import { Trash2, AlertTriangle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import api from "@/lib/api";
+} from '@/components/ui/alert-dialog'
+import { Trash2, AlertTriangle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
+import api from '@/lib/api'
 
 export function DeleteProductDialog({
   productId,
   productName,
   redirectAfter = false,
 }: {
-  productId: number;
-  productName: string;
-  redirectAfter?: boolean;
+  productId: number
+  productName: string
+  redirectAfter?: boolean
 }) {
-  const router = useRouter();
+  const router = useRouter()
 
   const handleDelete = async () => {
-    console.log("qorking")
+    console.log('qorking')
     try {
       await api.delete(`/products/${productId}`)
-      toast.success(`${productName} deleted`);
+      toast.success(`${productName} deleted`)
 
       if (redirectAfter) {
-        router.push("/admin/products");
+        router.push('/admin/products')
       }
 
-      router.refresh();
+      router.refresh()
     } catch {
-      toast.error("Product not deleted");
+      toast.error('Product not deleted')
     }
-  };
+  }
 
   return (
     <AlertDialog>
@@ -78,5 +78,5 @@ export function DeleteProductDialog({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }
