@@ -4,6 +4,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react'
 import * as Sentry from '@sentry/nextjs'
 import { Button } from './ui/button'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
+import LoadingFallback from './LoadingFallback'
 
 interface Props {
   children: ReactNode
@@ -27,6 +28,16 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('ErrorBoundary caught error:', {
+      error: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      errorBoundary: true,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      url: window.location.href
+    })
+
     this.setState({
       error,
       errorInfo,
@@ -40,10 +51,11 @@ export class ErrorBoundary extends Component<Props, State> {
             componentStack: errorInfo.componentStack,
           },
         },
+        tags: {
+          errorBoundary: 'true',
+          url: window.location.href,
+        },
       })
-    } else {
-      // In development, still log to console
-      console.error('Error caught by boundary:', error, errorInfo)
     }
   }
 

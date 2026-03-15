@@ -1,3 +1,5 @@
+'use client'
+
 import { AuthProvider } from '@/context/AuthContext'
 import { CartProvider } from '@/context/CartContext'
 import { AdminAuthProvider } from '@/context/AdminAuthContext'
@@ -7,6 +9,31 @@ import Navbar from '@/components/Navbar'
 import { Toaster } from 'sonner'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import type { Metadata } from 'next'
+import { useEffect } from 'react'
+
+// Global error handler for debugging
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', (event) => {
+    console.error('Global error caught:', {
+      message: event.message,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+      stack: event.error?.stack,
+      timestamp: new Date().toISOString(),
+      url: window.location.href
+    })
+  })
+
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Unhandled promise rejection:', {
+      reason: event.reason,
+      stack: event.reason?.stack,
+      timestamp: new Date().toISOString(),
+      url: window.location.href
+    })
+  })
+}
 
 const racing = Racing_Sans_One({
   subsets: ['latin'],
