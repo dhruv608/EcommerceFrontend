@@ -1,6 +1,7 @@
 import { AuthProvider } from '@/context/AuthContext'
 import { CartProvider } from '@/context/CartContext'
 import { AdminAuthProvider } from '@/context/AdminAuthContext'
+import { AuthModalProvider } from '@/context/AuthModalContext'
 import { Racing_Sans_One } from 'next/font/google'
 import './globals.css' // YE LINE CHECK KARO!
 import Navbar from '@/components/Navbar'
@@ -44,11 +45,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GlobalErrorHandler />
         <main>
           <AuthProvider>
-            <CartProvider>
-              <AdminAuthProvider>
-                <ErrorBoundary>{children}</ErrorBoundary>
-              </AdminAuthProvider>
-            </CartProvider>
+            <AuthModalProvider>
+              <CartProvider>
+                <AdminAuthProvider>
+                  <ErrorBoundary>{children}</ErrorBoundary>
+                </AdminAuthProvider>
+              </CartProvider>
+            </AuthModalProvider>
           </AuthProvider>
         </main>
         <Toaster position="top-right" richColors />
