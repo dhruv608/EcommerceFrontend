@@ -14,7 +14,7 @@ import EmptyProductsState from '@/components/ui/EmptyProductsState'
 import { useFilterStore, useInitializeFilters } from '@/store/filterStore'
 import ClientOnly from './ClientOnly'
 import { logger } from '@/lib/logger'
-import { ProductGridSkeleton, FilterSidebarSkeleton, ProductsHeaderSkeleton } from '@/components/skeleton'
+import { ProductGridSkeleton, PerfectProductsPageSkeleton } from '@/components/skeleton'
 
 // ProductsClient component for handling interactive product filtering
 interface ProductsClientProps {
@@ -140,83 +140,81 @@ export default function ProductsClient({
 
   return (
     <>
-      {/* Fixed Sidebar - Desktop Only */}
-      <aside className="hidden md:block fixed left-0 top-[80px] h-[calc(100vh-80px)] w-64 overflow-y-auto overflow-x-hidden z-40">
-        <div className="h-full px-2">
-          {isInitialLoading ? (
-            <FilterSidebarSkeleton />
-          ) : (
-            <ClientOnly
-              fallback={<div className="w-full h-20 bg-gray-200 rounded-md animate-pulse mb-4" />}
-            >
-              <FilterSidebar categories={categories} totalProductCount={0} />
-            </ClientOnly>
-          )}
-        </div>
-      </aside>
-
-      {/* Main Content - Offset from Sidebar */}
-      <main className="ml-0 md:ml-64 min-h-screen" suppressHydrationWarning={true}>
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
-          {/* HEADER */}
-          {isInitialLoading ? (
-            <ProductsHeaderSkeleton />
-          ) : (
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-              <div className="flex-1">
-                <h1 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 capitalize">
-                  {categoryName}
-                </h1>
-                <p className="text-muted-foreground mt-2 text-sm md:text-sm">
-                  Showing {productData.totalElements} results
-                </p>
-              </div>
-              <div className="flex items-center gap-2 w-full md:w-auto">
-                <ClientOnly
-                  fallback={<div className="w-10 h-10 bg-gray-200 rounded-md animate-pulse" />}
-                >
-                  <MobileFilter categories={categories} totalProductCount={0} />
-                </ClientOnly>
-                <ClientOnly
-                  fallback={<div className="w-64 h-10 bg-gray-200 rounded-md animate-pulse" />}
-                >
-                  <SearchBar />
-                </ClientOnly>
-                <ClientOnly
-                  fallback={<div className="w-44 h-10 bg-gray-200 rounded-md animate-pulse" />}
-                >
-                  <SortSelect />
-                </ClientOnly>
-              </div>
+      {/* Show perfect skeleton during initial load, otherwise show actual layout */}
+      {isInitialLoading ? (
+        <PerfectProductsPageSkeleton />
+      ) : (
+        <>
+          {/* Fixed Sidebar - Desktop Only */}
+          <aside className="hidden md:block fixed left-0 top-[80px] h-[calc(100vh-80px)] w-64 overflow-y-auto overflow-x-hidden z-40">
+            <div className="h-full px-2">
+              <ClientOnly
+                fallback={<div className="w-full h-20 bg-gray-200 rounded-md animate-pulse mb-4" />}
+              >
+                <FilterSidebar categories={categories} totalProductCount={0} />
+              </ClientOnly>
             </div>
-          )}
-          
-          <Separator className="mb-6" />
+          </aside>
 
-          {/* PRODUCT GRID */}
-          {(isInitialLoading || isLoading) ? (
-            <ProductGridSkeleton count={12} />
-          ) : productData.content.length > 0 ? (
-            <>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-4">
-                {productData.content.map((product, index) => (
-                  <ProductCard key={product.id} product={product} priority={index < 6} />
-                ))}
+          {/* Main Content - Offset from Sidebar */}
+          <main className="ml-0 md:ml-64 min-h-screen" suppressHydrationWarning={true}>
+            <div className="container mx-auto px-4 py-8 max-w-7xl">
+              {/* HEADER */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div className="flex-1">
+                  <h1 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 capitalize">
+                    {categoryName}
+                  </h1>
+                  <p className="text-muted-foreground mt-2 text-sm md:text-sm">
+                    Showing {productData.totalElements} results
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                  <ClientOnly
+                    fallback={<div className="w-10 h-10 bg-gray-200 rounded-md animate-pulse" />}
+                  >
+                    <MobileFilter categories={categories} totalProductCount={0} />
+                  </ClientOnly>
+                  <ClientOnly
+                    fallback={<div className="w-64 h-10 bg-gray-200 rounded-md animate-pulse" />}
+                  >
+                    <SearchBar />
+                  </ClientOnly>
+                  <ClientOnly
+                    fallback={<div className="w-44 h-10 bg-gray-200 rounded-md animate-pulse" />}
+                  >
+                    <SortSelect />
+                  </ClientOnly>
+                </div>
               </div>
+              <Separator className="mb-6" />
 
-              {productData.totalPages > 1 && (
-                <ProductPagination
-                  currentPage={productData.number + 1}
-                  totalPages={productData.totalPages}
-                />
+              {/* PRODUCT GRID */}
+              {isLoading ? (
+                <ProductGridSkeleton count={12} />
+              ) : productData.content.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-4">
+                    {productData.content.map((product, index) => (
+                      <ProductCard key={product.id} product={product} priority={index < 6} />
+                    ))}
+                  </div>
+
+                  {productData.totalPages > 1 && (
+                    <ProductPagination
+                      currentPage={productData.number + 1}
+                      totalPages={productData.totalPages}
+                    />
+                  )}
+                </>
+              ) : (
+                // Empty state with DotLottie animation
+                <EmptyProductsState clearFilters={() => filterState.clearAllFilters()} />
               )}
-            </>
-          ) : (
-            // Empty state with DotLottie animation
-            <EmptyProductsState clearFilters={() => filterState.clearAllFilters()} />
-          )}
-        </div>
-      </main>
+            </div>
+          </main>
+        </>
+      )}
     </>
   )
 }
