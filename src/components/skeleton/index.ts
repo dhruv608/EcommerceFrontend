@@ -2,6 +2,7 @@
 export { default as Skeleton } from './Skeleton'
 export { default as ProductCardSkeleton } from './ProductCardSkeleton'
 export { default as ProductGridSkeleton } from './ProductGridSkeleton'
+export { default as ProductsPageSkeleton } from './ProductsPageSkeleton'
 export { default as CategoryCardSkeleton } from './CategoryCardSkeleton'
 export { default as AdminTableSkeleton } from './AdminTableSkeleton'
 export { default as PageHeaderSkeleton } from './PageHeaderSkeleton'
