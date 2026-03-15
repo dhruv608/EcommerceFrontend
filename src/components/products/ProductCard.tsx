@@ -195,7 +195,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
         </div>
 
         {/* --- DETAILS SECTION --- */}
-        <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+        <div className="p-4 sm:p-4 space-y-3 sm:space-y-3">
           {/* Mobile: Category + Stock Row */}
           <div className="flex items-center justify-between sm:hidden">
             <Badge className="bg-[#acac49]/10 text-[#acac49] px-2 py-1 text-xs font-medium rounded-full">
@@ -220,27 +220,27 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
             </Badge>
           </div>
           
-          <h3 className="font-medium text-sm sm:text-lg text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="font-medium text-sm md:text-base text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-2">
             {product.name}
           </h3>
           
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-base sm:text-xl font-semibold text-primary">
+            <span className="text-sm md:text-base font-semibold text-primary">
               ₹{product.price.toLocaleString()}
             </span>
             {product.price && (
-              <span className="text-xs sm:text-sm text-muted-foreground line-through">
+              <span className="text-xs md:text-sm text-muted-foreground line-through">
                 ₹{Math.floor(product.price * 1.3).toLocaleString()}
               </span>
             )}
           </div>
 
           {/* Mobile Add to Cart Button */}
-          <div className="sm:hidden mt-3">
+          <div className="sm:hidden mt-4">
             {isInCart ? (
               // Mobile Quantity Selector
               <div className="bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-sm">
-                <div className="flex items-center justify-between p-2">
+                <div className="flex items-center justify-between p-3">
                   <div className="flex items-center gap-2">
                     <Button
                       variant="ghost"
@@ -287,7 +287,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
               <Button 
                 onClick={handleAddToCart}
                 disabled={product.stock === 0 || addingToCart || loading}
-                className="bg-[#acac49] hover:bg-[#96963f] text-white rounded-lg w-full py-2.5 text-sm font-medium flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-[#acac49] hover:bg-[#96963f] text-white rounded-lg w-full py-3 text-sm font-medium flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {addingToCart ? (
                   <>

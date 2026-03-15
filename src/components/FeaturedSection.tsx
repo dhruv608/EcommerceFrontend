@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag, Eye, Star } from "lucide-react"; // npm install lucide-react
+import { ShoppingBag, Star } from "lucide-react"; // npm install lucide-react
 import { ProductContent } from "@/lib/types";
 import { Button } from "./ui/button";
 
@@ -82,25 +82,15 @@ const FeaturedSection = ({
                     </span>
                   </div>
 
-                  {/* Wishlist Button */}
-                  <Button className="absolute top-4 right-4 bg-white p-2.5 rounded-full shadow-lg translate-x-10 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 delay-100 hover:text-red-500 hover:scale-110">
-                    <Star className="w-4 h-4" />
-                  </Button>
 
                   {/* 👇 Slide-Up Action Bar */}
                   <div className="absolute bottom-4 left-4 right-4 translate-y-[120%] group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => window.location.href = `/products/${product.id}`}
-                        className="flex-1 bg-[#acac49] hover:bg-[#96963f] text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-colors shadow-xl"
-                      >
-                        <Eye className="w-4 h-4" />
-                        View Product
-                      </button>
-                      <Button className="bg-white text-black p-3 rounded-xl shadow-xl hover:bg-gray-100 transition-colors">
-                        <Eye className="w-5 h-5" />
-                      </Button>
-                    </div>
+                    <button 
+                      onClick={() => window.location.href = `/products/${product.id}`}
+                      className="w-full bg-[#acac49] hover:bg-[#96963f] text-white py-3 rounded-xl font-bold text-sm flex items-center justify-center transition-colors shadow-xl"
+                    >
+                      View Product
+                    </button>
                   </div>
                 </div>
 

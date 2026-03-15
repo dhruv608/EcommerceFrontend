@@ -102,7 +102,7 @@ export default function Navbar() {
                   height={32}
                   className="h-8 w-auto"
                 />
-                <h1 className="font-semibold text-lg tracking-tight transition-colors cursor-pointer">
+                <h1 className="font-semibold text-base md:text-lg tracking-tight transition-colors cursor-pointer">
                   <span className="text-black">Light</span>
                   <span className="text-[#acac49] group-hover:text-[#98983e]"> Store</span>
                 </h1>
@@ -154,14 +154,14 @@ export default function Navbar() {
               {!isLoggedIn ? (
                 <Button
                   onClick={() => openAuthModal("login")}
-                  className="btn-outline px-4 py-2 text-sm font-medium"
+                  className="btn-outline px-4 py-2.5 text-sm font-medium"
                 >
                   Sign In
                 </Button>
               ) : (
                 <button
                   onClick={() => setProfileModalOpen(true)}
-                  className="flex items-center space-x-2 p-2 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
+                  className="flex items-center space-x-2 p-3 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
                 >
                   <User className="w-5 h-5" />
                   <span className="hidden lg:block text-sm font-medium">{user?.name?.split(' ')[0]}</span>
@@ -172,7 +172,7 @@ export default function Navbar() {
               {isLoggedIn && (
                 <button
                   onClick={handleOrdersClick}
-                  className="p-2 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
+                  className="p-3 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
                 >
                   <Package className="w-5 h-5" />
                 </button>
@@ -181,7 +181,7 @@ export default function Navbar() {
               {/* Cart */}
               <button
                 onClick={handleCartClick}
-                className="relative p-2 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
+                className="relative p-3 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
               >
                 <ShoppingCart className="w-5 h-5" />
                 {cartCount > 0 && (
@@ -194,7 +194,7 @@ export default function Navbar() {
               {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 text-foreground hover:text-primary transition-colors rounded-lg hover:bg-primary/10"
+                className="lg:hidden p-3 text-foreground hover:text-primary transition-colors rounded-lg hover:bg-primary/10"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -204,15 +204,15 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         <div className={`lg:hidden transition-all duration-300 ${mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
-          <div className="container-premium py-4 space-y-2">
-            <Link href="/products" className="block px-4 py-2 text-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
+          <div className="container-premium py-5 space-y-3">
+            <Link href="/products" className="block px-4 py-3 text-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
               Shop
             </Link>
             
             {/* Mobile Categories */}
             <div className="relative" ref={dropdownRef}>
               <button 
-                className="w-full px-4 py-2 text-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors flex items-center justify-between"
+                className="w-full px-4 py-3 text-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors flex items-center justify-between"
                 onClick={toggleCategoriesDropdown}
               >
                 <span>Categories</span>
@@ -235,16 +235,16 @@ export default function Navbar() {
               )}
             </div>
             
-            <Link href="/about" className="block px-4 py-2 text-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
+            <Link href="/about" className="block px-4 py-3 text-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors">
               About
             </Link>
             
             {/* Mobile User Actions */}
-            <div className="px-4 py-2 flex items-center gap-4">
+            <div className="px-4 py-3 flex items-center gap-4">
               {!isLoggedIn ? (
                 <Button
                   onClick={() => openAuthModal("login")}
-                  className="btn-outline px-4 py-2 text-sm font-medium"
+                  className="btn-outline px-4 py-2.5 text-sm font-medium"
                 >
                   Sign In
                 </Button>
@@ -252,14 +252,14 @@ export default function Navbar() {
                 <>
                   <button
                     onClick={() => setProfileModalOpen(true)}
-                    className="flex items-center space-x-2 p-2 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
+                    className="flex items-center space-x-2 p-3 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
                   >
                     <User className="w-5 h-5" />
                     <span className="text-sm font-medium">{user?.name?.split(' ')[0]}</span>
                   </button>
                   <button
                     onClick={handleOrdersClick}
-                    className="p-2 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
+                    className="p-3 text-[#333] hover:text-[#acac49] transition-colors rounded-lg hover:bg-primary/10 cursor-pointer"
                   >
                     <Package className="w-5 h-5" />
                   </button>

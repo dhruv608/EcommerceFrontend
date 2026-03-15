@@ -124,10 +124,10 @@ export default function ProductsClient({
           {/* HEADER */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div className="flex-1">
-              <h1 className="text-4xl font-black tracking-tight text-gray-900 capitalize">
+              <h1 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 capitalize">
                 {categoryName}
               </h1>
-              <p className="text-muted-foreground mt-2 text-sm">
+              <p className="text-muted-foreground mt-2 text-sm md:text-sm">
                 Showing {productData.totalElements} results
               </p>
             </div>
@@ -148,7 +148,7 @@ export default function ProductsClient({
           {/* PRODUCT GRID */}
           {productData.content.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-4">
                 {productData.content.map((product, index) => (
                   <ProductCard
                     key={product.id}

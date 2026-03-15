@@ -52,18 +52,18 @@ export default function MobileFilter({ categories, totalProductCount }: { catego
         className="w-[320px] bg-white overflow-y-auto px-6 py-6"
       >
         <SheetHeader className="mb-6 text-left">
-          <SheetTitle className="text-xl font-black">Refine Selection</SheetTitle>
-          <SheetDescription>
+          <SheetTitle className="text-lg md:text-xl font-black">Refine Selection</SheetTitle>
+          <SheetDescription className="text-sm">
             Filter products by category and price.
           </SheetDescription>
         </SheetHeader>
 
-        <div className="mt-6 space-y-8 pb-10">
+        <div className="mt-6 space-y-6 pb-10">
           {/* Categories */}
           <div>
-            <h3 className="text-base font-semibold text-gray-900 mb-3">Categories</h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
+            <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-3">Categories</h3>
+            <div className="space-y-2">
+              <div className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
                 <Checkbox 
                   id="mobile-cat-all" 
                   checked={!categoryId}
@@ -75,7 +75,7 @@ export default function MobileFilter({ categories, totalProductCount }: { catego
                 </Label>
               </div>
               {categories.map((cat) => (
-                <div key={cat.id} className="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
+                <div key={cat.id} className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
                   <Checkbox 
                     id={`mobile-cat-${cat.id}`} 
                     checked={categoryId === cat.id.toString()}
@@ -94,9 +94,9 @@ export default function MobileFilter({ categories, totalProductCount }: { catego
 
           {/* Featured Products */}
           <div>
-            <h3 className="text-base font-semibold text-gray-900 mb-3">Special</h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
+            <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-3">Special</h3>
+            <div className="space-y-2">
+              <div className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
                 <Checkbox 
                   id="mobile-featured" 
                   checked={isFeatured}
@@ -114,7 +114,7 @@ export default function MobileFilter({ categories, totalProductCount }: { catego
 
           {/* Price Range */}
           <div>
-            <h3 className="text-base font-semibold text-gray-900 mb-3">Price Range</h3>
+            <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-3">Price Range</h3>
             
             {/* Custom Dual Range Slider */}
             <div className="slider-container relative w-full h-9 mt-4 mb-5">
