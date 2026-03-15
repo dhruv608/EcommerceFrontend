@@ -76,14 +76,6 @@ export default function CategorySection({ categories }: { categories: Category[]
               Explore our curated collections and discover the perfect pieces for your style
             </p>
           </div>
-
-          <Link
-            href="/categories"
-            className="group inline-flex items-center gap-2 px-6 py-3 border-2 border-primary text-primary font-bold rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300 transform hover:scale-105"
-          >
-            View All Categories
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
         </div>
 
         {/* Cards */}
