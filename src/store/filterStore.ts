@@ -5,17 +5,20 @@ interface FilterState {
   categoryId: string | null
   minPrice: number
   maxPrice: number
+  dynamicMaxPrice?: number
   sortBy: string
   direction: string
   search: string | null
   page: number
   isFeatured: boolean
   _isInitializing: boolean
+  _userClearedCategory: boolean
 }
 
 interface FilterActions {
   setCategoryId: (categoryId: string | null) => void
   setPriceRange: (min: number, max: number) => void
+  setDynamicMaxPrice: (maxPrice: number) => void
   setSort: (sortBy: string, direction: string) => void
   setSearch: (search: string | null) => void
   setPage: (page: number) => void
@@ -38,19 +41,31 @@ const DEFAULT_FILTERS: FilterState = {
   page: 0,
   isFeatured: false,
   _isInitializing: false,
+  _userClearedCategory: false,
 }
 
 export const useFilterStore = create<FilterStore>((set, get) => ({
   ...DEFAULT_FILTERS,
 
   setCategoryId: categoryId => {
-    set({ categoryId, page: 0 })
+    set({ categoryId, page: 0, _userClearedCategory: categoryId === null })
     get().syncWithURL()
+    
+    // Reset the flag after a short delay to allow for navigation
+    if (categoryId !== null) {
+      setTimeout(() => {
+        set({ _userClearedCategory: false })
+      }, 100)
+    }
   },
 
   setPriceRange: (minPrice, maxPrice) => {
     set({ minPrice, maxPrice, page: 0 })
     get().syncWithURL()
+  },
+
+  setDynamicMaxPrice: (dynamicMaxPrice) => {
+    set({ dynamicMaxPrice })
   },
 
   setSort: (sortBy, direction) => {
@@ -85,13 +100,15 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     const state: Partial<FilterState> = {}
 
     const categoryId = params.get('categoryId')
-    if (categoryId) state.categoryId = categoryId
+    state.categoryId = categoryId || null
 
     const minPrice = params.get('minPrice')
     if (minPrice) state.minPrice = Number(minPrice)
 
     const maxPrice = params.get('maxPrice')
-    if (maxPrice) state.maxPrice = Number(maxPrice)
+    if (maxPrice && Number(maxPrice) !== DEFAULT_FILTERS.maxPrice) {
+      state.maxPrice = Number(maxPrice)
+    }
 
     const sortBy = params.get('sortBy')
     if (sortBy) state.sortBy = sortBy
@@ -116,13 +133,15 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     const state: Partial<FilterState> = {}
 
     const categoryId = params.get('categoryId')
-    if (categoryId) state.categoryId = categoryId
+    state.categoryId = categoryId || null
 
     const minPrice = params.get('minPrice')
     if (minPrice) state.minPrice = Number(minPrice)
 
     const maxPrice = params.get('maxPrice')
-    if (maxPrice) state.maxPrice = Number(maxPrice)
+    if (maxPrice && Number(maxPrice) !== DEFAULT_FILTERS.maxPrice) {
+      state.maxPrice = Number(maxPrice)
+    }
 
     const sortBy = params.get('sortBy')
     if (sortBy) state.sortBy = sortBy
@@ -165,7 +184,10 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     if (state.categoryId) params.set('categoryId', state.categoryId)
     if (state.minPrice !== DEFAULT_FILTERS.minPrice)
       params.set('minPrice', state.minPrice.toString())
-    if (state.maxPrice !== DEFAULT_FILTERS.maxPrice)
+    
+    // Only include maxPrice if it's different from the default
+    const defaultMaxPrice = state.dynamicMaxPrice || DEFAULT_FILTERS.maxPrice
+    if (state.maxPrice !== defaultMaxPrice)
       params.set('maxPrice', state.maxPrice.toString())
     if (state.sortBy !== DEFAULT_FILTERS.sortBy) params.set('sortBy', state.sortBy)
     if (state.direction !== DEFAULT_FILTERS.direction) params.set('direction', state.direction)
@@ -196,6 +218,25 @@ export const useInitializeFilters = () => {
 
     return () => clearTimeout(timer)
   }, [initializeFromURL])
+
+  // Clean up unnecessary URL parameters after initialization
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      const state = useFilterStore.getState()
+      const params = new URLSearchParams(window.location.search)
+      
+      // Remove unnecessary parameters
+      if (params.get('maxPrice') === '5000') {
+        params.delete('maxPrice')
+        const newUrl = params.toString() ? `/products?${params.toString()}` : '/products'
+        if (window.location.pathname + window.location.search !== newUrl) {
+          window.history.replaceState({}, '', newUrl)
+        }
+      }
+    }, 100)
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   // Listen for popstate events (browser back/forward)
   React.useEffect(() => {

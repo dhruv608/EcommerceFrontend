@@ -12,9 +12,10 @@ import { useFilterStore } from '@/store/filterStore'
 interface FilterSidebarProps {
   categories: Category[]
   totalProductCount?: number
+  maxPrice?: number
 }
 
-export default function FilterSidebar({ categories, totalProductCount }: FilterSidebarProps) {
+export default function FilterSidebar({ categories, totalProductCount, maxPrice: dynamicMaxPrice = 5000 }: FilterSidebarProps) {
   const {
     categoryId,
     minPrice,
@@ -28,13 +29,14 @@ export default function FilterSidebar({ categories, totalProductCount }: FilterS
 
   // Local state for slider drag interaction
   const [localMinPrice, setLocalMinPrice] = React.useState(minPrice)
-  const [localMaxPrice, setLocalMaxPrice] = React.useState(maxPrice)
+  const [localMaxPrice, setLocalMaxPrice] = React.useState(maxPrice > dynamicMaxPrice ? dynamicMaxPrice : maxPrice)
 
   // Sync local slider state with global store
   React.useEffect(() => {
     setLocalMinPrice(minPrice)
-    setLocalMaxPrice(maxPrice)
-  }, [minPrice, maxPrice])
+    const adjustedMaxPrice = maxPrice > dynamicMaxPrice ? dynamicMaxPrice : maxPrice
+    setLocalMaxPrice(adjustedMaxPrice)
+  }, [minPrice, maxPrice, dynamicMaxPrice])
 
   return (
     <div className="bg-white rounded-[14px] p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] w-full max-w-full hidden md:block">
@@ -49,7 +51,7 @@ export default function FilterSidebar({ categories, totalProductCount }: FilterS
           <div className="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
             <Checkbox
               id="cat-all"
-              checked={!categoryId}
+              checked={categoryId === null}
               onCheckedChange={() => setCategoryId(null)}
               className="w-4 h-4 accent-[#a3a23d]"
             />
@@ -107,8 +109,8 @@ export default function FilterSidebar({ categories, totalProductCount }: FilterS
           <div
             className="slider-range absolute top-1/2 h-1 bg-[#acac49] rounded-[4px] transform -translate-y-1/2"
             style={{
-              left: `${(localMinPrice / 5000) * 100}%`,
-              width: `${((localMaxPrice - localMinPrice) / 5000) * 100}%`,
+              left: `${(localMinPrice / dynamicMaxPrice) * 100}%`,
+              width: `${((localMaxPrice - localMinPrice) / dynamicMaxPrice) * 100}%`,
             }}
           ></div>
 
@@ -116,7 +118,7 @@ export default function FilterSidebar({ categories, totalProductCount }: FilterS
           <input
             type="range"
             min="0"
-            max="5000"
+            max={dynamicMaxPrice}
             value={localMinPrice}
             onChange={e => {
               let newMin = Number(e.target.value)
@@ -135,7 +137,7 @@ export default function FilterSidebar({ categories, totalProductCount }: FilterS
           <input
             type="range"
             min="0"
-            max="5000"
+            max={dynamicMaxPrice}
             value={localMaxPrice}
             onChange={e => {
               let newMax = Number(e.target.value)

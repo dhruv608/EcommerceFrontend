@@ -20,9 +20,11 @@ import { useFilterStore } from '@/store/filterStore'
 export default function MobileFilter({
   categories,
   totalProductCount,
+  maxPrice: dynamicMaxPrice = 5000,
 }: {
   categories: Category[]
   totalProductCount?: number
+  maxPrice?: number
 }) {
   const [isOpen, setIsOpen] = React.useState(false)
 
@@ -39,13 +41,14 @@ export default function MobileFilter({
 
   // Local state for slider drag interaction
   const [localMinPrice, setLocalMinPrice] = React.useState(minPrice)
-  const [localMaxPrice, setLocalMaxPrice] = React.useState(maxPrice)
+  const [localMaxPrice, setLocalMaxPrice] = React.useState(maxPrice > dynamicMaxPrice ? dynamicMaxPrice : maxPrice)
 
   // Sync local slider state with global store
   React.useEffect(() => {
     setLocalMinPrice(minPrice)
-    setLocalMaxPrice(maxPrice)
-  }, [minPrice, maxPrice])
+    const adjustedMaxPrice = maxPrice > dynamicMaxPrice ? dynamicMaxPrice : maxPrice
+    setLocalMaxPrice(adjustedMaxPrice)
+  }, [minPrice, maxPrice, dynamicMaxPrice])
 
   // Close sheet when filters are cleared
   const handleClearAllFilters = () => {
@@ -81,7 +84,7 @@ export default function MobileFilter({
               <div className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-[#f8f8f8] cursor-pointer transition-colors">
                 <Checkbox
                   id="mobile-cat-all"
-                  checked={!categoryId}
+                  checked={categoryId === null}
                   onCheckedChange={() => setCategoryId(null)}
                   className="w-4 h-4 accent-[#a3a23d]"
                 />
@@ -146,8 +149,8 @@ export default function MobileFilter({
               <div
                 className="slider-range absolute top-1/2 h-1 bg-[#acac49] rounded-[4px] transform -translate-y-1/2"
                 style={{
-                  left: `${(localMinPrice / 5000) * 100}%`,
-                  width: `${((localMaxPrice - localMinPrice) / 5000) * 100}%`,
+                  left: `${(localMinPrice / dynamicMaxPrice) * 100}%`,
+                  width: `${((localMaxPrice - localMinPrice) / dynamicMaxPrice) * 100}%`,
                 }}
               ></div>
 
@@ -155,7 +158,7 @@ export default function MobileFilter({
               <input
                 type="range"
                 min="0"
-                max="5000"
+                max={dynamicMaxPrice}
                 value={localMinPrice}
                 onChange={e => {
                   let newMin = Number(e.target.value)
@@ -173,7 +176,7 @@ export default function MobileFilter({
               <input
                 type="range"
                 min="0"
-                max="5000"
+                max={dynamicMaxPrice}
                 value={localMaxPrice}
                 onChange={e => {
                   let newMax = Number(e.target.value)

@@ -4,7 +4,7 @@
 
 import React, { useEffect, useState } from 'react'
 
-import { Category, Product } from '@/lib/types'
+import { Category, Product, ProductContent } from '@/lib/types'
 
 import api from '@/lib/api'
 
@@ -70,6 +70,8 @@ export default function ProductsClient({
 
   const [isLoading, setIsLoading] = useState(false)
 
+  const [maxProductPrice, setMaxProductPrice] = useState<number>(5000)
+
 
 
   // Get filter state
@@ -89,8 +91,9 @@ export default function ProductsClient({
   useEffect(() => {
 
     // Only sync if URL has categoryId but store doesn't (to handle hard refresh)
+    // Don't sync if user explicitly cleared the category
 
-    if (initialSearchParams.categoryId && !filterState.categoryId) {
+    if (initialSearchParams.categoryId && !filterState.categoryId && !filterState._userClearedCategory) {
 
       console.log('Syncing categoryId from server to store:', initialSearchParams.categoryId)
 
@@ -98,7 +101,7 @@ export default function ProductsClient({
 
     }
 
-  }, [initialSearchParams.categoryId, filterState.categoryId, filterState.setCategoryId])
+  }, [initialSearchParams.categoryId, filterState.categoryId, filterState._userClearedCategory, filterState.setCategoryId])
 
 
 
@@ -142,7 +145,7 @@ export default function ProductsClient({
 
     if (filterState.minPrice > 0) params.minPrice = filterState.minPrice.toString()
 
-    if (filterState.maxPrice < 5000) params.maxPrice = filterState.maxPrice.toString()
+    if (filterState.maxPrice < maxProductPrice) params.maxPrice = filterState.maxPrice.toString()
 
     if (filterState.sortBy !== 'createdAt') params.sortBy = filterState.sortBy
 
@@ -201,6 +204,14 @@ export default function ProductsClient({
       setProductData(productResponse)
 
       setCategories(categoriesResponse)
+
+      // Calculate max price from products
+      if (productResponse.content && productResponse.content.length > 0) {
+        const maxPrice = Math.max(...productResponse.content.map((product: ProductContent) => product.price))
+        const roundedMaxPrice = Math.ceil(maxPrice / 100) * 100 // Round up to nearest 100
+        setMaxProductPrice(roundedMaxPrice)
+        filterState.setDynamicMaxPrice(roundedMaxPrice)
+      }
 
 
 
@@ -278,7 +289,7 @@ export default function ProductsClient({
 
           >
 
-            <FilterSidebar categories={categories} totalProductCount={0} />
+            <FilterSidebar categories={categories} totalProductCount={0} maxPrice={maxProductPrice} />
 
           </ClientOnly>
 
@@ -322,7 +333,7 @@ export default function ProductsClient({
 
               >
 
-                <MobileFilter categories={categories} totalProductCount={0} />
+                <MobileFilter categories={categories} totalProductCount={0} maxPrice={maxProductPrice} />
 
               </ClientOnly>
 
